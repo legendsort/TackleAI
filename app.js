@@ -1,5 +1,5 @@
-const CrawlerService = require('./service');
+const CrawlerService = require("./service");
 
-const Crawler =  new CrawlerService();
+const Crawler = new CrawlerService();
 
-Crawler.launchBrowser();
+Crawler.execute();

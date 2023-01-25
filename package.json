@@ -9,6 +9,7 @@
         "start": "node app.js"
     },
     "dependencies": {
+        "puppeteer": "^19.6.0",
         "puppeteer-extra": "^3.3.4"
     }
 }
