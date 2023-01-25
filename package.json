@@ -1,0 +1,14 @@
+{
+    "name": "scrape-service",
+    "version": "0.0.0",
+    "lockfileVersion": 2,
+    "requires": true,
+    "packages": {},
+    "scripts": {
+        "dev": "nodemon app.js",
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "puppeteer-extra": "^3.3.4"
+    }
+}
