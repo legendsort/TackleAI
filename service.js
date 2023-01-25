@@ -41,6 +41,12 @@ class CrawlerService {
     this.page = null;
   }
 
+  init = async () => {
+    await this.initBrowser();
+    await this.launchBrowser();
+    this.page = await this.openNewPage();
+  };
+
   //init Chromium browser
   initBrowser = async () => {
     if (this.browser) {
@@ -138,10 +144,6 @@ class CrawlerService {
 
   //execute the script
   execute = async () => {
-    await this.initBrowser();
-    await this.launchBrowser();
-    this.page = await this.openNewPage();
-
     // iterate the maker list
     for (const {makerName, script} of makerList) {
       console.log("---> scrape ", makerName);
