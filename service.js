@@ -106,21 +106,36 @@ class CrawlerService {
             data.map((x) => {
               return {
                 type: 1,
-                url: x.src,
+                url: x.src.split("/v1/fill")[0],
                 alt: x.alt,
               };
             })
           );
           continue;
         }
-        response[key] = (await page.$$eval(value, (data) => data.map((x) => x.innerText)))[0];
+        response[key] = (
+          await page.$$eval(value, (data) =>
+            data.map((x) => {
+              return x.innerText;
+            })
+          )
+        )[0];
       }
-      console.log(response);
       return response;
     } catch (e) {
       console.log("Error when scrape detailed data: ", e);
     }
   };
+
+  //validate and format the response
+  validResponse = (response) => {
+    if (response.media)
+      response.media.map((media) => {
+        media.url = media.url.replace(" ", "");
+      });
+    return response;
+  };
+
   //execute the script
   execute = async () => {
     await this.initBrowser();
@@ -145,9 +160,10 @@ class CrawlerService {
               let response = await this.scrapeObject(this.page, url, data);
               response.maker = makerName;
               response.url = this.page.url();
-              console.log(response);
+              response = this.validResponse(response);
+              baits.push(response);
             }
-            console.log(baits);
+            return baits;
         }
       }
     }
