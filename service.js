@@ -1,6 +1,8 @@
 const puppeteer = require("puppeteer-extra");
 const makerList = require("./maker.json");
 const convertToSlug = require("./helper/helper");
+const socialList = require("./config/social.json");
+const rssList = require("./config/rss-feed.json");
 
 const config = {
   width: 1800,
@@ -9,28 +11,7 @@ const config = {
   timeout: 120000,
   ignoreHTTPSErrors: true,
   executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-  args: [
-    "--no-sandbox",
-    "--disable-gpu",
-    "--no-first-run",
-    "--no-zygote",
-    "--disable-setuid-sandbox",
-    "--disable-infobars",
-    "--disable-breakpad",
-    "--disable-notifications",
-    "--disable-desktop-notifications",
-    "--disable-component-update",
-    "--disable-background-downloads",
-    "--disable-add-to-shelf",
-    "--disable-datasaver-prompt",
-    "--ignore-urlfetcher-cert-requests",
-    "--ignore-certificate-errors",
-    "--disable-client-side-phishing-detection",
-    "--autoplay-policy=no-user-gesture-required",
-    "--disable-web-security",
-    "--allow-running-insecure-content",
-    "--use-system-clipboard",
-  ],
+  args: [],
 };
 
 /**
@@ -93,6 +74,7 @@ class CrawlerService {
       return data;
     } catch (e) {
       console.log("Error when get urls of baits from the page: ", e);
+      return [];
     }
   };
 
@@ -145,7 +127,7 @@ class CrawlerService {
     return response;
   };
 
-  //execute the script
+  //execute the scraping script
   execute = async () => {
     // iterate the maker list
     for (const {makerName, script} of makerList) {
@@ -174,6 +156,82 @@ class CrawlerService {
         }
       }
     }
+  };
+
+  //scrape data from site with selector and property
+  getDataBySelector = async (page, selector, property = null) => {
+    try {
+      const response = await page.$eval(selector, (data, property) => data[property], property);
+      return response;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  //get site info to build maker info
+  getSiteInfo = async (maker) => {
+    const {url} = maker;
+    const newMaker = {...maker};
+
+    const avatarSelector = "link[rel*='icon']";
+    const descSelector = "meta[name='description']";
+
+    await this.visitPage(this.page, url);
+    try {
+      // get avatar link
+      const avatarUrl = await this.getDataBySelector(this.page, avatarSelector, "href");
+      // get description
+      const description = await this.getDataBySelector(this.page, descSelector, "content");
+      // get rss feed
+      let rssFeed = "";
+      for (const rss of rssList) {
+        const response = await this.getDataBySelector(this.page, rss, "href");
+        if (response !== "") {
+          rssFeed = response;
+          break;
+        }
+      }
+      // get social urls
+      let socialUrl = {};
+      for (const [site, url] of Object.entries(socialList)) {
+        const selector = `a[href*='${url}']`;
+        const link = await this.getDataBySelector(this.page, selector, "href");
+        socialUrl[site] = link;
+      }
+      // update maker
+      if (avatarUrl) newMaker.avatarUrl = avatarUrl;
+      if (description) newMaker.description = description;
+      newMaker.socials = socialUrl;
+      if (rssFeed) newMaker.feed_url = rssFeed;
+      return newMaker;
+    } catch (e) {
+      console.log("Cannot fetch information from the site");
+      return maker;
+    }
+
+    // const response = await this.scrapeObject(
+    //   this.page,
+    //   "https://www.hillcountryswimbaits.com/product-page/rats-floater-crankdown",
+    //   {
+    //     name: '[data-hook="product-title"]',
+    //     link: '[href*="instagram.com"]',
+    //   }
+    // );
+    // console.log(response);
+    // const {iconLink, description, feedUrl, socialLinks} = await this.page.$$eval(
+    //   '[rel="icon"],meta[name="description"],link[type="application/rss+xml"],a[href*="twitter.com"],a[href*="facebook.com"],a[href*="instagram.com"]',
+    //   (icons, desc, feed, social) => {
+    //     console.log(icons[0]);
+    //     return {iconLink: icons[0]};
+    //     return {
+    //       iconLink: icons[0].href ?? "",
+    //       description: desc[0].content ?? "",
+    //       feedUrl: feed[0].href ?? "",
+    //       socialLinks: social.map((element) => element.href ?? ""),
+    //     };
+    //   }
+    // );
+    // console.log({iconLink, description, feedUrl, socialLinks});
   };
 }
 

@@ -1,6 +1,7 @@
 [
     {
         "makerName": "Hill Country Swimbaits",
+        "avatar": "[href*=\"instagram.com\"]",
         "script": [
             {
                 "type": "visit",

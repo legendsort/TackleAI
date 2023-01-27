@@ -3,12 +3,9 @@ require("dotenv").config();
 const CronJob = require("cron").CronJob;
 const CrawlerService = require("./service");
 const supabase = require("./supabase/anon");
+const {fetch, upsert} = require("./supabase/supbase");
 
-const ScrapeData = async () => {
-  const {data, error} = await supabase.from("makers").select();
-  console.log(error);
-  console.log(data);
-  return;
+const ScrapeItem = async () => {
   const Crawler = new CrawlerService();
   await Crawler.init();
 
@@ -26,4 +23,21 @@ const ScrapeData = async () => {
   job.start();
 };
 
-ScrapeData();
+const ScrapeMakers = async () => {
+  const Crawler = new CrawlerService();
+  await Crawler.init();
+  const makerList = await fetch(supabase, "makers");
+  const newMakerList = [];
+  for (const maker of makerList) {
+    const {url, name, slug} = maker;
+    const newMaker = await Crawler.getSiteInfo(maker);
+    newMakerList.push(newMaker);
+    console.log(newMaker);
+    await upsert(supabase, "makers", newMaker);
+  }
+  console.log(newMakerList);
+  process.exit(0);
+};
+
+// ScrapeItem();
+ScrapeMakers();
