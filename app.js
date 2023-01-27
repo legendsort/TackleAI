@@ -23,6 +23,7 @@ const ScrapeItem = async () => {
   job.start();
 };
 
+//scrape information of maker
 const ScrapeMakers = async () => {
   const Crawler = new CrawlerService();
   await Crawler.init();
@@ -32,8 +33,6 @@ const ScrapeMakers = async () => {
     const {url, name, slug} = maker;
     const newMaker = await Crawler.getSiteInfo(maker);
     newMakerList.push(newMaker);
-    console.log(newMaker);
-    await upsert(supabase, "makers", newMaker);
   }
   console.log(newMakerList);
   process.exit(0);

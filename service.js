@@ -208,30 +208,6 @@ class CrawlerService {
       console.log("Cannot fetch information from the site");
       return maker;
     }
-
-    // const response = await this.scrapeObject(
-    //   this.page,
-    //   "https://www.hillcountryswimbaits.com/product-page/rats-floater-crankdown",
-    //   {
-    //     name: '[data-hook="product-title"]',
-    //     link: '[href*="instagram.com"]',
-    //   }
-    // );
-    // console.log(response);
-    // const {iconLink, description, feedUrl, socialLinks} = await this.page.$$eval(
-    //   '[rel="icon"],meta[name="description"],link[type="application/rss+xml"],a[href*="twitter.com"],a[href*="facebook.com"],a[href*="instagram.com"]',
-    //   (icons, desc, feed, social) => {
-    //     console.log(icons[0]);
-    //     return {iconLink: icons[0]};
-    //     return {
-    //       iconLink: icons[0].href ?? "",
-    //       description: desc[0].content ?? "",
-    //       feedUrl: feed[0].href ?? "",
-    //       socialLinks: social.map((element) => element.href ?? ""),
-    //     };
-    //   }
-    // );
-    // console.log({iconLink, description, feedUrl, socialLinks});
   };
 }
 
