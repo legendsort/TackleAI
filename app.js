@@ -1,8 +1,14 @@
 const fs = require("fs");
+require("dotenv").config();
 const CronJob = require("cron").CronJob;
 const CrawlerService = require("./service");
+const supabase = require("./supabase/anon");
 
 const ScrapeData = async () => {
+  const {data, error} = await supabase.from("makers").select();
+  console.log(error);
+  console.log(data);
+  return;
   const Crawler = new CrawlerService();
   await Crawler.init();
 

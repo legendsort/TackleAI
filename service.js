@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer-extra");
 const makerList = require("./maker.json");
+const convertToSlug = require("./helper/helper");
 
 const config = {
   width: 1800,
@@ -105,7 +106,9 @@ class CrawlerService {
   scrapeObject = async (page, url, data) => {
     try {
       await this.visitPage(page, url);
-      let response = {};
+      let response = {
+        isLive: false,
+      };
       for (const [key, value] of Object.entries(data)) {
         if (key === "media") {
           response[key] = await page.$$eval(value, (data) =>
@@ -162,6 +165,8 @@ class CrawlerService {
               let response = await this.scrapeObject(this.page, url, data);
               response.maker = makerName;
               response.url = this.page.url();
+              response.slug = convertToSlug(response.name);
+              response.maker_slug = convertToSlug(makerName);
               response = this.validResponse(response);
               baits.push(response);
             }

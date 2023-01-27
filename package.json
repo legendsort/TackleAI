@@ -9,6 +9,7 @@
         "start": "node app.js"
     },
     "dependencies": {
+        "@supabase/supabase-js": "^2.4.1",
         "cron": "^2.2.0",
         "dotenv": "^16.0.3",
         "puppeteer": "^19.6.0",
