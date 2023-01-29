@@ -1,9 +1,10 @@
 require("dotenv").config();
-const debug = require("debug")("genux-service:server");
 const http = require("http");
+const CronJob = require("cron").CronJob;
+const debug = require("debug")("genux-service:server");
 
 const app = require("./app");
-const {scrape} = require("./controller/scrapeController");
+const {scrapeMakers} = require("./controller/scrapeController");
 
 const port = parseInt(process.env.PORT || "3000", 10);
 
@@ -41,12 +42,14 @@ server.on("error", onError);
 server.on("listening", onListening);
 
 // periodically scrape
-// const job = new CronJob(
-//   "* * * * *",
-//   async () => {
-//     const data = scrape();
-//   },
-//   null,
-//   false
-// );
-// job.start();
+const job = new CronJob(
+  "0 2 * * *",
+  async () => {
+    console.log("Automatically update start");
+    const data = await scrapeMakers();
+    console.log("Automatically update end");
+  },
+  null,
+  false
+);
+job.start();

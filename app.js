@@ -1,14 +1,11 @@
 require("dotenv").config();
-const fs = require("fs");
 const cors = require("cors");
 const logger = require("morgan");
 const jwt = require("express-jwt");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const CronJob = require("cron").CronJob;
 
-const CrawlerService = require("./scrape/service");
 const itemRouter = require("./routes/itemRouter");
 const makerRouter = require("./routes/makerRouter");
 const scrapeRouter = require("./routes/scrapeRouter");
