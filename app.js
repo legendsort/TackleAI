@@ -1,9 +1,17 @@
-const fs = require("fs");
 require("dotenv").config();
+const fs = require("fs");
+const cors = require("cors");
+const logger = require("morgan");
+const jwt = require("express-jwt");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const CronJob = require("cron").CronJob;
+
 const CrawlerService = require("./scrape/service");
 const supabase = require("./supabase/anon");
 const {fetch, upsert} = require("./supabase/supbase");
+const makerRouter = require("./routes/makerRouter");
 
 const ScrapeItem = async () => {
   const Crawler = new CrawlerService();
@@ -25,8 +33,6 @@ const ScrapeItem = async () => {
 
 // ScrapeItem();
 // ScrapeMakers();
-
-//
 const scrape = async (id = null) => {
   const Crawler = new CrawlerService();
   await Crawler.init();
@@ -36,6 +42,7 @@ const scrape = async (id = null) => {
 
   for (const maker of makerList) {
     const newMaker = await Crawler.getSiteInfo(maker);
+
     response.push({
       maker: newMaker,
     });
@@ -45,7 +52,31 @@ const scrape = async (id = null) => {
   return response[0];
 };
 
-scrape(3).then((res) => {
-  console.log(res);
-  process.exit(0);
-});
+// scrape(3).then((res) => {
+//   console.log(res);
+// });
+
+// express settings
+const app = express();
+app.use(logger("dev"));
+app.use(cors());
+
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(cookieParser);
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+    limit: "50mb",
+    parameterLimit: 5000,
+  })
+);
+
+// register route
+const baseUrl = process.env.BASE_URL;
+console.log(baseUrl + "/maker");
+app.use(baseUrl + "/maker", makerRouter);
+// app.use(baseUrl + "/item", itemRouter);
+// app.use(baseUrl + "/scrape", scrapeRouter);
+module.exports = app;

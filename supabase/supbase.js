@@ -7,8 +7,7 @@ const fetch = async (supabase, dbName, id = null) => {
     return [];
   }
   const {data, error} = await supabase.from(dbName).select().eq("id", id);
-  if (error == null) return data;
-  return [];
+  return {data, error};
 };
 
 const upsert = async (supabase, dbName, input) => {
