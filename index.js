@@ -3,6 +3,7 @@ const debug = require("debug")("genux-service:server");
 const http = require("http");
 
 const app = require("./app");
+const {scrape} = require("./controller/scrapeController");
 
 const port = parseInt(process.env.PORT || "3000", 10);
 
@@ -38,3 +39,14 @@ server.listen(port, () => {
 });
 server.on("error", onError);
 server.on("listening", onListening);
+
+// periodically scrape
+// const job = new CronJob(
+//   "* * * * *",
+//   async () => {
+//     const data = scrape();
+//   },
+//   null,
+//   false
+// );
+// job.start();

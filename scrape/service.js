@@ -7,7 +7,7 @@ const rssList = require("../config/rss-feed.json");
 const config = {
   width: 1800,
   height: 800,
-  headless: false,
+  headless: true,
   timeout: 120000,
   ignoreHTTPSErrors: true,
   executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -131,7 +131,6 @@ class CrawlerService {
   execute = async () => {
     // iterate the maker list
     for (const {makerName, script} of makerList) {
-      console.log("---> scrape ", makerName);
       for (const scriptItem of script) {
         const {type} = scriptItem;
         switch (type) {
@@ -214,6 +213,15 @@ class CrawlerService {
       console.log("Cannot fetch information from the site");
       return maker;
     }
+  };
+
+  //get item
+  getItems = async (maker) => {
+    if (maker.id === 9) {
+      const data = await this.execute();
+      return data;
+    }
+    return null;
   };
 }
 
