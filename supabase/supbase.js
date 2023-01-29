@@ -3,8 +3,7 @@
 const fetch = async (supabase, dbName, id = null) => {
   if (id == null) {
     const {data, error} = await supabase.from(dbName).select();
-    if (error == null) return data;
-    return [];
+    return {data, error};
   }
   const {data, error} = await supabase.from(dbName).select().eq("id", id);
   return {data, error};

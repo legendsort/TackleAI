@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer-extra");
 const makerList = require("../config/maker.json");
-const convertToSlug = require("../helper/helper");
+const {convertToSlug} = require("../helper");
 const socialList = require("../config/social.json");
 const rssList = require("../config/rss-feed.json");
 
@@ -170,7 +170,12 @@ class CrawlerService {
   //get site info to build maker info
   getSiteInfo = async (maker) => {
     const {url} = maker;
-    const newMaker = {...maker};
+    const newMaker = {
+      id: maker.id,
+      url: maker.url,
+      name: maker.name,
+      slug: maker.slug,
+    };
 
     const avatarSelector = "link[rel*='icon']";
     const descSelector = "meta[name='description']";
@@ -197,11 +202,10 @@ class CrawlerService {
         const link = await this.getDataBySelector(this.page, selector, "href");
         socialUrl[site] = link;
       }
-      // update maker
-      if (avatarUrl) newMaker.avatarUrl = avatarUrl;
-      if (description) newMaker.description = description;
+      newMaker.avatarUrl = avatarUrl;
+      newMaker.description = description;
       newMaker.socials = socialUrl;
-      if (rssFeed) newMaker.feed_url = rssFeed;
+      newMaker.feed_url = rssFeed;
       return newMaker;
     } catch (e) {
       console.log("Cannot fetch information from the site");

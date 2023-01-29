@@ -34,7 +34,6 @@ const onListening = () => {
 // Listen on provided port, on all network interfaces.
 server.listen(port, () => {
   const address = server.address();
-  console.log("Server is running on ", address);
   console.log("Server is running on port ", port);
 });
 server.on("error", onError);

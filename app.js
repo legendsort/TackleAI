@@ -8,10 +8,12 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const CronJob = require("cron").CronJob;
 
-const CrawlerService = require("./scrape/service");
 const supabase = require("./supabase/anon");
+const CrawlerService = require("./scrape/service");
 const {fetch, upsert} = require("./supabase/supbase");
+const itemRouter = require("./routes/itemRouter");
 const makerRouter = require("./routes/makerRouter");
+const scrapeRouter = require("./routes/scrapeRouter");
 
 const ScrapeItem = async () => {
   const Crawler = new CrawlerService();
@@ -63,7 +65,7 @@ app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(cookieParser);
+app.use(cookieParser());
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(
   bodyParser.urlencoded({
@@ -75,8 +77,8 @@ app.use(
 
 // register route
 const baseUrl = process.env.BASE_URL;
-console.log(baseUrl + "/maker");
 app.use(baseUrl + "/maker", makerRouter);
-// app.use(baseUrl + "/item", itemRouter);
-// app.use(baseUrl + "/scrape", scrapeRouter);
+app.use(baseUrl + "/item", itemRouter);
+app.use(baseUrl + "/scrape", scrapeRouter);
+
 module.exports = app;
