@@ -1,8 +1,8 @@
 const puppeteer = require("puppeteer-extra");
-const makerList = require("./maker.json");
-const convertToSlug = require("./helper/helper");
-const socialList = require("./config/social.json");
-const rssList = require("./config/rss-feed.json");
+const makerList = require("../config/maker.json");
+const convertToSlug = require("../helper/helper");
+const socialList = require("../config/social.json");
+const rssList = require("../config/rss-feed.json");
 
 const config = {
   width: 1800,
@@ -145,7 +145,6 @@ class CrawlerService {
             const baits = [];
             for (const url of urlList) {
               let response = await this.scrapeObject(this.page, url, data);
-              response.maker = makerName;
               response.url = this.page.url();
               response.slug = convertToSlug(response.name);
               response.maker_slug = convertToSlug(makerName);
