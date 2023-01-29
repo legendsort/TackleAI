@@ -196,11 +196,14 @@ class CrawlerService {
         }
       }
       // get social urls
-      let socialUrl = {};
+      const socialUrl = [];
       for (const [site, url] of Object.entries(socialList)) {
         const selector = `a[href*='${url}']`;
         const link = await this.getDataBySelector(this.page, selector, "href");
-        socialUrl[site] = link;
+        socialUrl.push({
+          url: link,
+          type: site,
+        });
       }
       newMaker.avatarUrl = avatarUrl;
       newMaker.description = description;
