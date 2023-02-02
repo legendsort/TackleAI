@@ -7,7 +7,7 @@ const rssList = require("../config/rss-feed.json");
 const config = {
   width: 1800,
   height: 800,
-  headless: true,
+  headless: false,
   timeout: 120000,
   ignoreHTTPSErrors: true,
   executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -167,14 +167,8 @@ class CrawlerService {
   };
 
   //get site info to build maker info
-  getSiteInfo = async (maker) => {
-    const {url} = maker;
-    const newMaker = {
-      id: maker.id,
-      url: maker.url,
-      name: maker.name,
-      slug: maker.slug,
-    };
+  getSiteInfo = async (url) => {
+    const newMaker = {};
 
     const avatarSelector = "link[rel*='icon']";
     const descSelector = "meta[name='description']";
@@ -204,13 +198,13 @@ class CrawlerService {
           type: site,
         });
       }
-      newMaker.avatarUrl = avatarUrl;
-      newMaker.description = description;
-      newMaker.socials = socialUrl;
-      newMaker.feed_url = rssFeed;
+      if (avatarUrl) newMaker.avatarUrl = avatarUrl;
+      if (description) newMaker.description = description;
+      if (socialUrl) newMaker.socials = socialUrl;
+      if (rssFeed) newMaker.feed_url = rssFeed;
       return newMaker;
     } catch (e) {
-      console.log("Cannot fetch information from the site");
+      console.log("Cannot fetch information from the site", e);
       return maker;
     }
   };

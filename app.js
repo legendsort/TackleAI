@@ -8,7 +8,6 @@ const cookieParser = require("cookie-parser");
 
 const productRouter = require("./routes/productRouter");
 const sellerRouter = require("./routes/sellerRouter");
-const scrapeRouter = require("./routes/scrapeRouter");
 
 // express settings
 const app = express();
@@ -31,6 +30,5 @@ app.use(
 const baseUrl = process.env.BASE_URL;
 app.use(baseUrl + "/seller", sellerRouter);
 app.use(baseUrl + "/product", productRouter);
-app.use(baseUrl + "/scrape", scrapeRouter);
 
 module.exports = app;

@@ -4,8 +4,6 @@ const CronJob = require("cron").CronJob;
 const debug = require("debug")("genux-service:server");
 
 const app = require("./app");
-const {scrapeSellers} = require("./controller/scrapeController");
-
 const port = parseInt(process.env.PORT || "3000", 10);
 
 app.set("port", port);
