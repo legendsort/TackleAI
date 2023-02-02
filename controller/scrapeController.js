@@ -3,11 +3,10 @@ const supabase = require("../supabase/anon");
 const {sendResponse} = require("../helper");
 const CrawlerService = require("../scrape/service");
 
-const scrapeMakers = async (id = null) => {
+const scrapeSellers = async (id = null) => {
   const Crawler = new CrawlerService();
   await Crawler.init();
   try {
-    // console.log("-->", id);
     const makerResponse = await fetch(supabase, "makers", id);
     if (makerResponse.error) return {data: null, error: makerResponse.error};
     const makerList = makerResponse.data;
@@ -39,16 +38,16 @@ const scrapeMakers = async (id = null) => {
 module.exports = {
   scrape: async (req, res) => {
     const {id} = req.query;
-    if (id == null) return sendResponse(res, 400, "Error: maker id is not given");
+    if (id == null) return sendResponse(res, 400, "Error: seller id is not given");
 
-    const {data, error} = await scrapeMakers(id);
+    const {data, error} = await scrapeSellers(id);
     if (error) return sendResponse(res, 500, "Error: something wrong in scraping");
-    return sendResponse(res, 200, "Successfully scraped maker info and items", data);
+    return sendResponse(res, 200, "Successfully scraped seller info and items", data);
   },
   scrapeAll: async (req, res) => {
-    const {data, error} = await scrapeMakers();
+    const {data, error} = await scrapeSellers();
     if (error) return sendResponse(res, 500, "Error: something wrong in scraping");
-    return sendResponse(res, 200, "Successfully scraped maker info and items", data);
+    return sendResponse(res, 200, "Successfully scraped seller info and items", data);
   },
-  scrapeMakers,
+  scrapeSellers,
 };

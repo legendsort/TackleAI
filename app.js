@@ -6,8 +6,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
-const itemRouter = require("./routes/itemRouter");
-const makerRouter = require("./routes/makerRouter");
+const productRouter = require("./routes/productRouter");
+const sellerRouter = require("./routes/sellerRouter");
 const scrapeRouter = require("./routes/scrapeRouter");
 
 // express settings
@@ -29,8 +29,8 @@ app.use(
 
 // register route
 const baseUrl = process.env.BASE_URL;
-app.use(baseUrl + "/maker", makerRouter);
-app.use(baseUrl + "/item", itemRouter);
+app.use(baseUrl + "/seller", sellerRouter);
+app.use(baseUrl + "/product", productRouter);
 app.use(baseUrl + "/scrape", scrapeRouter);
 
 module.exports = app;

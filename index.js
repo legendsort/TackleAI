@@ -4,7 +4,7 @@ const CronJob = require("cron").CronJob;
 const debug = require("debug")("genux-service:server");
 
 const app = require("./app");
-const {scrapeMakers} = require("./controller/scrapeController");
+const {scrapeSellers} = require("./controller/scrapeController");
 
 const port = parseInt(process.env.PORT || "3000", 10);
 
@@ -46,7 +46,7 @@ const job = new CronJob(
   "0 2 * * *",
   async () => {
     console.log("Automatically update start");
-    const data = await scrapeMakers();
+    const data = await scrapeSellers();
     console.log("Automatically update end");
   },
   null,

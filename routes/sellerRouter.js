@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const contoller = require("../controller/itemController");
+const contoller = require("../controller/sellerContoller");
 
 router.get("/retrieve", contoller.fetch);
 
