@@ -217,6 +217,11 @@ class CrawlerService {
     }
     return null;
   };
+
+  getContent = async (url) => {
+    await this.visitPage(this.page, url);
+    return this.page.$eval("*", (el) => el.innerText);
+  };
 }
 
 module.exports = CrawlerService;

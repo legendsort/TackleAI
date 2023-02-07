@@ -6,7 +6,8 @@
     "packages": {},
     "scripts": {
         "dev": "nodemon index.js",
-        "start": "node index.js"
+        "start": "node index.js",
+        "test": "node test.js"
     },
     "dependencies": {
         "@supabase/supabase-js": "^2.4.1",
