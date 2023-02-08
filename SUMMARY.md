@@ -1,22 +1,19 @@
 # Table of contents
 
-* [👋 Welcome to A Product](README.md)
+* [👋 Question List](README.md)
 
 ## Overview
 
-* [💡 What we do](overview/what-we-do.md)
-* [✨ Our Features](overview/our-features.md)
-
-## Product Guides
-
-* [📪 Making a post](product-guides/making-a-post.md)
-* [📎 Understanding Projects](product-guides/understanding-projects.md)
+* [💡 Tell me about your self](overview/tell-me-about-your-self.md)
+* [📪 Great Strength](overview/great-strength.md)
+* [📎 Reason to work here](overview/reason-to-work-here.md)
+* [📝 Setting permissions](overview/setting-permissions.md)
+* [🧑 What would your co-workers say about you?](overview/what-would-your-co-workers-say-about-you.md)
+* [✨ Weave](overview/weave.md)
 
 ## Fundamentals
 
-* [🛠 Getting set up](fundamentals/getting-set-up/README.md)
-  * [📝 Setting permissions](fundamentals/getting-set-up/setting-permissions.md)
-  * [🧑 Inviting Members](fundamentals/getting-set-up/inviting-members.md)
+* [🛠 Getting set up](fundamentals/getting-set-up.md)
 
 ## Use Cases
 

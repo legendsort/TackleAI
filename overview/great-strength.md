@@ -1,4 +1,4 @@
-# 📪 Making a post
+# 📪 Great Strength
 
 ## Step 1 - Start journalling
 
