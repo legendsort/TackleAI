@@ -49,6 +49,23 @@ class CrawlerService {
     }
   };
 
+  getAllUrl = async (page) => {
+    const hrefs = await page.$$eval("a", (as) => as.map((a) => a.href));
+    const realLink = href.filter((link) => {
+      return link.substr(0, 4) == "http";
+    });
+    return hrefs;
+  };
+
+  visitAll = async (url, step, ans) => {
+    await this.visitPage(this.page, url);
+    ans.push(url);
+    if (step == 0) return;
+    const hrefs = await this.getAllUrl(this.page);
+    for (const href of hrefs) {
+      await this.visitAll(href, step - 1, ans);
+    }
+  };
   //visit website with url
   visitPage = async (page, url) => {
     try {
@@ -220,7 +237,13 @@ class CrawlerService {
 
   getContent = async (url) => {
     await this.visitPage(this.page, url);
-    return this.page.$eval("*", (el) => el.innerText);
+    // return this.page.content();
+    return this.page.$eval("*", (el) => {
+      // if (el.innerText && el.innerText.length > 0) return el.innerHTML;
+      // return el.innerText.length;
+      return el.innerText;
+      if (el.innerText) return el.innerHTML;
+    });
   };
 }
 

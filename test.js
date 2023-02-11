@@ -14,4 +14,18 @@ const test = async (url) => {
   //   await Crawler.initBrowser();
 };
 
-test("https://gatordog-customs.myshopify.com/collections/all");
+// test("https://www.hillcountryswimbaits.com/");
+
+const test1 = async (url) => {
+  const Crawler = new CrawlerService();
+  await Crawler.init();
+  let a = [];
+  await Crawler.visitAll(url, 1, a);
+  console.log(a);
+
+  await fs.writeFileSync("test.txt", a.join("\n"));
+  console.log("FINISH");
+  //   await Crawler.initBrowser();
+};
+
+test1("https://www.hillcountryswimbaits.com/");
