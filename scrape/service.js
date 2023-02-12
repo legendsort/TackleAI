@@ -51,13 +51,16 @@ class CrawlerService {
 
   getAllUrl = async (page) => {
     const hrefs = await page.$$eval("a", (as) => as.map((a) => a.href));
-    const realLink = href.filter((link) => {
+    const realLink = hrefs.filter((link) => {
       return link.substr(0, 4) == "http";
     });
-    return hrefs;
+    return realLink;
   };
 
   visitAll = async (url, step, ans) => {
+    if (ans.includes(url)) {
+      return;
+    }
     await this.visitPage(this.page, url);
     ans.push(url);
     if (step == 0) return;
@@ -244,6 +247,19 @@ class CrawlerService {
       return el.innerText;
       if (el.innerText) return el.innerHTML;
     });
+  };
+
+  getText = async (url) => {
+    await this.visitPage(this.page, url);
+    return this.page.$eval("*", (el) => {
+      return el.innerText;
+    });
+  };
+
+  checkOneProductPage = async (url) => {
+    await this.visitPage(this.page, url);
+    const text = await this.getText();
+    return true;
   };
 }
 
