@@ -1,7 +1,7 @@
 const {sendResponse} = require("../helper");
 const CrawlerService = require("../scrape/service");
 
-const scrapeSeller = async (url) => {
+const scrapeDetail = async (url) => {
   const Crawler = new CrawlerService();
   await Crawler.init();
   try {
@@ -28,7 +28,7 @@ const scrapeSeller = async (url) => {
 module.exports = {
   fetch: async (req, res) => {
     const {url} = req.query;
-    const {data, error} = await scrapeSeller(url);
+    const {data, error} = await scrapeDetail(url);
 
     if (error) return sendResponse(res, 500, error, data);
     return sendResponse(res, 200, "Successfully fetched items", data);

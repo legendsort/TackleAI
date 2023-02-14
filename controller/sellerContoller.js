@@ -1,16 +1,13 @@
 const {sendResponse} = require("../helper");
 const CrawlerService = require("../scrape/service");
+const {Configuration, OpenAIApi} = require("openai");
 
+const apiKey = process.env.OPENAI_API_KEY;
 const scrapeSeller = async (url) => {
   const Crawler = new CrawlerService();
   await Crawler.init();
   try {
-    const seller = await Crawler.getSiteInfo(url);
-    // const items = await Crawler.getItems(maker);
-    const response = {
-      seller: seller,
-      // items: items,
-    };
+    const response = await Crawler.getSiteInfo(url);
 
     await Crawler.initBrowser();
     return {
@@ -27,20 +24,68 @@ const scrapeSeller = async (url) => {
   }
 };
 
-const visitAll = async (url, step) => {
+const checkOneProductPage = async (Crawler, url) => {
+  let text = await Crawler.getText(url);
+
+  if (text.length > 500) {
+    text = text.substr(0, 500);
+  }
+
+  const configuration = new Configuration({
+    apiKey: apiKey,
+  });
+
+  const openai = new OpenAIApi(configuration);
+  const prompts = [
+    text +
+      "\nQ: Is this information about detail of only one bait product? Please answer with 'Yes' or 'No'\nA:",
+  ];
+  let isProductPage = false;
+  for (const prompt of prompts) {
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      max_tokens: 2000,
+      n: 1,
+      prompt: prompt,
+    });
+
+    const answer = completion.data.choices[0].text.trim();
+    if (answer.includes("Yes")) {
+      isProductPage = true;
+      break;
+    }
+  }
+  return isProductPage;
+};
+
+const filterProductURL = async (Crawler, urlList) => {
+  let ans = [];
+  for (let i = 0; i < urlList.length; i++) {
+    const check = await checkOneProductPage(Crawler, urlList[i]);
+    console.log("---->", urlList[i], check);
+    if (check) ans.push(urlList[i]);
+  }
+  console.log("=====>");
+  console.log(ans);
+  return ans;
+};
+
+const getProductList = async (url, step) => {
   const Crawler = new CrawlerService();
   try {
     await Crawler.init();
     let urlList = [];
     await Crawler.visitAll(url, 1, urlList);
     console.log(urlList);
+    const productUrlList = await filterProductURL(Crawler, urlList);
+    console.log("FINISH");
+    await Crawler.initBrowser();
     return {
-      data: urlList,
+      data: productUrlList,
       error: null,
     };
   } catch (e) {
     await Crawler.initBrowser();
-    console.log(e);
     return {
       data: null,
       error: e,
@@ -57,9 +102,8 @@ module.exports = {
   },
   productList: async (req, res) => {
     const {url} = req.query;
-    const {data, error} = await visitAll(url, 5);
-    // const {data, error} = await scrapeSeller(url);
+    const {data, error} = await getProductList(url, 5);
     if (error) return sendResponse(res, 500, error, data);
-    return sendResponse(res, 200, "Successfully scrape data of seller", data);
+    return sendResponse(res, 200, "Successfully scrape urllist of all pages", data);
   },
 };
