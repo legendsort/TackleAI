@@ -35,20 +35,20 @@ const scrapeDetail = async (url) => {
       live: false,
     };
 
-    // for (const [key, value] of Object.entries(query)) {
-    //   try {
-    //     const completion = await openai.createCompletion({
-    //       model: "text-davinci-003",
-    //       max_tokens: 2000,
-    //       n: 1,
-    //       prompt: value,
-    //     });
+    for (const [key, value] of Object.entries(query)) {
+      try {
+        const completion = await openai.createCompletion({
+          model: "text-davinci-003",
+          max_tokens: 2000,
+          n: 1,
+          prompt: value,
+        });
 
-    //     const answer = completion.data.choices[0].text.trim();
-    //     console.log("===========>", key, answer);
-    //     response[key] = answer;
-    //   } catch (e) {}
-    // }
+        const answer = completion.data.choices[0].text.trim();
+        console.log("===========>", key, answer);
+        response[key] = answer;
+      } catch (e) {}
+    }
     console.log(images);
     const getImageLinkPrompt =
       text +

@@ -266,13 +266,29 @@ class CrawlerService {
   getImages = async (url) => {
     await this.visitPage(this.page, url);
     const imageElementsHTML = await this.page.$$eval("img", (imgs) =>
-      imgs.map((img) => img.outerHTML)
+      // imgs.map((img) => img.outerHTML);
+      imgs.map((img) => {
+        return {
+          src: img.src,
+          alt: img.alt,
+          title: img.title,
+          class: img.class,
+        };
+      })
     );
 
     const aElementHTML = await this.page.$$eval("a", (imgs) =>
-      imgs.map((img) => img.outerHTML.replace(/(<a[^>]*>)\s*[\s\S]*?\s*(<\/a>)/gi, "$1$2"))
+      // imgs.map((img) => img.outerHTML.replace(/(<a[^>]*>)\s*[\s\S]*?\s*(<\/a>)/gi, "$1$2"))
+      imgs.map((img) => {
+        return {
+          src: img.src,
+          alt: img.alt,
+          title: img.title,
+        };
+      })
     );
-    return imageElementsHTML.concat(aElementHTML);
+    return imageElementsHTML;
+    // return imageElementsHTML.concat(aElementHTML);
   };
   checkOneProductPage = async (url) => {
     await this.visitPage(this.page, url);
