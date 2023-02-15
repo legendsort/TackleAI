@@ -256,6 +256,24 @@ class CrawlerService {
     });
   };
 
+  getHTML = async (url) => {
+    await this.visitPage(this.page, url);
+    return this.page.$eval("*", (el) => {
+      if (el.innerText.length && el.innerText.length > 0) return el.outerHTML;
+    });
+  };
+
+  getImages = async (url) => {
+    await this.visitPage(this.page, url);
+    const imageElementsHTML = await this.page.$$eval("img", (imgs) =>
+      imgs.map((img) => img.outerHTML)
+    );
+
+    const aElementHTML = await this.page.$$eval("a", (imgs) =>
+      imgs.map((img) => img.outerHTML.replace(/(<a[^>]*>)\s*[\s\S]*?\s*(<\/a>)/gi, "$1$2"))
+    );
+    return imageElementsHTML.concat(aElementHTML);
+  };
   checkOneProductPage = async (url) => {
     await this.visitPage(this.page, url);
     const text = await this.getText();
