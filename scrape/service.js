@@ -290,11 +290,6 @@ class CrawlerService {
     return imageElementsHTML;
     // return imageElementsHTML.concat(aElementHTML);
   };
-  checkOneProductPage = async (url) => {
-    await this.visitPage(this.page, url);
-    const text = await this.getText();
-    return true;
-  };
 }
 
 module.exports = CrawlerService;

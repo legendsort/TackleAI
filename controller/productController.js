@@ -22,17 +22,17 @@ const scrapeDetail = async (url) => {
     const query = {
       price:
         text +
-        "\nQ: How much does the product cost? If it was sold out, what is the previous cost? Please put only number first\nA:",
-      title: text + "\nQ: What is title of the product? Please answer simply\nA:",
-      description: text + "\nQ: What is description of the product?\nA:",
-      sku: text + "\nQ: What is the sku of the product? Please answer only sku\nA:",
+        "\nQ: How much does the product cost? If it was sold out, what is the previous cost? Please answer only price. I need only number\nA:",
+      title: text + "\nQ: What is title of the product? Please answer only title.\nA:",
+      description:
+        text + "\nQ: What is description of the product? Please answer only description,\nA:",
+      sku: text + "\nQ: What is the sku of the product? Please answer  only sku.\nA:",
     };
 
     const openai = new OpenAIApi(configuration);
 
     let response = {
       url: url,
-      live: false,
     };
 
     for (const [key, value] of Object.entries(query)) {
