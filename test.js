@@ -31,7 +31,7 @@ const testScrapeAllURL = async (url) => {
 
 // testScrapeAllURL("https://rafascustombaits.com/");
 
-const apiKey = "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";
+const apiKey = "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";
 
 const checkOneProductPage = async (url) => {
   // const Crawler = new CrawlerService();
@@ -45,23 +45,21 @@ const checkOneProductPage = async (url) => {
     apiKey: apiKey,
   });
   const openai = new OpenAIApi(configuration);
-  const prompt =
-    "Question 1: What is the meaning of life?\n\nQuestion 2: How do airplanes fly?\n\nQuestion 3: What are the symptoms of COVID-19?";
-  const completion = await openai.createCompletion({
-    prompt: prompt,
-    model: "text-davinci-003",
-    max_tokens: 100,
-    n: 1,
-    stop: "\n\n",
-  });
+  // const prompt =
+  //   "Question 1: What is the meaning of life?\n\nQuestion 2: How do airplanes fly?\n\nQuestion 3: What are the symptoms of COVID-19?";
   // const completion = await openai.createCompletion({
+  //   prompt: prompt,
   //   model: "text-davinci-003",
-  //   max_tokens: 500,
-  //   n: 2,
-  //   prompt:
-  //     text +
-  //     "\nQ: I want to know the percent that above text contains only one baid product info or checkout info. Please provide only percent number\nA:",
+  //   max_tokens: 100,
+  //   n: 1,
+  //   stop: "\n\n",
   // });
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    max_tokens: 500,
+    n: 2,
+    prompt: url + "\nQ: Is web page with above url for only one bait product? \nA:",
+  });
   const answer = completion.data.choices[0].text.trim();
   // await Crawler.initBrowser();
 
@@ -88,5 +86,17 @@ const filterProductURL = async () => {
   console.log(ans);
   return ans;
 };
-checkOneProductPage("https://rafascustombaits.com/products/sucka-glide?variant=40891798585437");
+
+const urls = [
+  "https://trueswimbaits.com/collections/all",
+  "https://trueswimbaits.com/products/the-original-alabama-rig",
+  "https://trueswimbaits.com/products/team-true-bass-bundle-storm-trooper-hoodie-and-beanie",
+  "https://trueswimbaits.com/products/black-camo-hoodie-true-bass-fishing",
+  "https://trueswimbaits.com/products/truelock-underspin",
+  "https://trueswimbaits.com/products/true-bass-swimbait-little-head-4-5",
+];
+for (const url of urls) {
+  checkOneProductPage(url);
+}
+// checkOneProductPage("https://trueswimbaits.com/products/ba-spinner-pre-order");
 // filterProductURL();

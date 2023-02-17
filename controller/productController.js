@@ -8,25 +8,23 @@ const scrapeDetail = async (url) => {
   const Crawler = new CrawlerService();
   try {
     await Crawler.init();
-    let text = await Crawler.getText(url);
-    let images = await Crawler.getImages(url);
-
-    if (text.length > 500) {
-      text = text.substr(0, 500);
-    }
-
     const configuration = new Configuration({
       apiKey: apiKey,
     });
 
     const query = {
       price:
-        text +
-        "\nQ: How much does the product cost? If it was sold out, what is the previous cost? Please answer only price. I need only number\nA:",
-      title: text + "\nQ: What is title of the product? Please answer only title.\nA:",
+        url +
+        "\nQ: How much does the product cost in web page with above url? If it was sold out, what is the previous cost? I need only number\nA:",
+      title:
+        url +
+        "\nQ: What is title of the product in web page with above url? Please answer only title.\nA:",
       description:
-        text + "\nQ: What is description of the product? Please answer only description,\nA:",
-      sku: text + "\nQ: What is the sku of the product? Please answer  only sku.\nA:",
+        url +
+        "\nQ: What is description of the product in web page with above url? Please answer only description,\nA:",
+      sku:
+        url +
+        "\nQ: What is the sku of the product in web page with above url? Please answer  only sku.\nA:",
     };
 
     const openai = new OpenAIApi(configuration);
@@ -49,13 +47,9 @@ const scrapeDetail = async (url) => {
         response[key] = answer;
       } catch (e) {}
     }
-    console.log(images);
     const getImageLinkPrompt =
-      text +
-      "\n" +
-      images +
-      "\n" +
-      `Q: please provide the object array contains link and alt of current product's images. Format like this: [{"type": 1, "url": "https://lin.com/test1", "alt": "Swim Bait"}, {"type": 1, "url": "https://lin.com/test2", "alt": "Wood Bait"}] /nA: `;
+      url +
+      `\nQ: please provide the object array contains link and alt of current product's images  in web page with above url. Format like this: [{"type": 1, "url": "https://lin.com/test1", "alt": "Swim Bait"}, {"type": 1, "url": "https://lin.com/test2", "alt": "Wood Bait"}] /nA: `;
 
     try {
       const completion = await openai.createCompletion({

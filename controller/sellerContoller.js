@@ -25,34 +25,32 @@ const scrapeSeller = async (url) => {
 };
 
 const checkOneProductPage = async (Crawler, url) => {
-  let text = await Crawler.getText(url);
-
-  if (text.length > 500) {
-    text = text.substr(0, 500);
-  }
-
   const configuration = new Configuration({
     apiKey: apiKey,
   });
 
   const openai = new OpenAIApi(configuration);
   const prompts = [
-    text +
-      "\nQ: Is this information about detail of only one bait product? Please answer with 'Yes' or 'No'\nA:",
+    url +
+      "\nQ: Is web page with above url for only one bait product? Please answer with 'Yes' or 'No'\nA:",
   ];
   let isProductPage = false;
   for (const prompt of prompts) {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      max_tokens: 2000,
-      n: 1,
-      prompt: prompt,
-    });
+    try {
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        max_tokens: 2000,
+        n: 1,
+        prompt: prompt,
+      });
 
-    const answer = completion.data.choices[0].text.trim();
-    if (answer.includes("Yes")) {
-      isProductPage = true;
-      break;
+      const answer = completion.data.choices[0].text.trim();
+      if (answer.includes("Yes")) {
+        isProductPage = true;
+        break;
+      }
+    } catch (e) {
+      consinue;
     }
   }
   return isProductPage;
@@ -75,7 +73,7 @@ const getProductList = async (url, step) => {
   try {
     await Crawler.init();
     let urlList = [];
-    await Crawler.visitAll(url, 1, urlList);
+    await Crawler.visitAll(url, step, urlList);
     console.log(urlList);
     const productUrlList = await filterProductURL(Crawler, urlList);
     console.log("FINISH");
