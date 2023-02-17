@@ -50,7 +50,7 @@ const checkOneProductPage = async (Crawler, url) => {
         break;
       }
     } catch (e) {
-      consinue;
+      continue;
     }
   }
   return isProductPage;
@@ -83,6 +83,7 @@ const getProductList = async (url, step) => {
       error: null,
     };
   } catch (e) {
+    console.log(e);
     await Crawler.initBrowser();
     return {
       data: null,
@@ -100,7 +101,7 @@ module.exports = {
   },
   productList: async (req, res) => {
     const {url} = req.query;
-    const {data, error} = await getProductList(url, 5);
+    const {data, error} = await getProductList(url, 10);
     if (error) return sendResponse(res, 500, error, data);
     return sendResponse(res, 200, "Successfully scrape urllist of all pages", data);
   },

@@ -48,23 +48,35 @@ class CrawlerService {
       console.log("Error occured when launching chromium: ", e);
     }
   };
+  isSameDomain = async (url1, url2) => {
+    try {
+      const u1 = new URL(url1);
+      const u2 = new URL(url2);
+      return u1.hostname === u2.hostname;
+    } catch (err) {
+      return false;
+    }
+  };
 
-  getAllUrl = async (page) => {
-    const hrefs = await page.$$eval("a", (as) => as.map((a) => a.href));
-    const realLink = hrefs.filter((link) => {
-      return link.substr(0, 4) == "http";
-    });
+  getAllUrl = async (url, page) => {
+    const hrefs = await page.$$eval("a", (as) => as.map((a) => a.href.split("#")[0]));
+
+    const realLink = [];
+    for (const link of hrefs) {
+      if (await this.isSameDomain(url, link)) realLink.push(link);
+    }
     return realLink;
   };
 
   visitAll = async (url, step, ans) => {
-    if (ans.includes(url)) {
-      return;
-    }
+    if (ans.includes(url)) return;
     await this.visitPage(this.page, url);
+    url = this.page.url();
+    if (ans.includes(url)) return;
+
     ans.push(url);
     if (step == 0) return;
-    const hrefs = await this.getAllUrl(this.page);
+    const hrefs = await this.getAllUrl(url, this.page);
     for (const href of hrefs) {
       await this.visitAll(href, step - 1, ans);
     }

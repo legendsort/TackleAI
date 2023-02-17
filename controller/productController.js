@@ -15,7 +15,7 @@ const scrapeDetail = async (url) => {
     const query = {
       price:
         url +
-        "\nQ: How much does the product cost in web page with above url? If it was sold out, what is the previous cost? I need only number\nA:",
+        "\nQ: How much does the product cost in web page with above url? I need only number(In case this is sold out, say 'Sold out')\nA:",
       title:
         url +
         "\nQ: What is title of the product in web page with above url? Please answer only title.\nA:",
