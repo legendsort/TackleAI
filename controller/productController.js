@@ -6,23 +6,34 @@ const apiKey = process.env.OPENAI_API_KEY;
 
 const scrapeDetail = async (url) => {
   const Crawler = new CrawlerService();
+
   try {
     await Crawler.init();
     const configuration = new Configuration({
       apiKey: apiKey,
     });
-
+    let text = await Crawler.getText(url);
+    console.log(text);
+    if (text.length > 300) text = text.substr(0, 300);
     const query = {
       price:
+        text +
+        "\n" +
         url +
-        "\nQ: How much does the product cost in web page with above url? I need only number(In case this is sold out, say 'Sold out')\nA:",
+        "\nQ: How much does the product cost in web page with above url? I need only number(In case this is sold out, respond with only previous pirce number')\nA:",
       title:
+        text +
+        "\n" +
         url +
         "\nQ: What is the title of the product given in web page with above url? Please answer only title.\nA:",
       description:
+        text +
+        "\n" +
         url +
         "\nQ: What is the description of the product given in web page with above url? Please answer only description,\nA:",
       sku:
+        text +
+        "\n" +
         url +
         "\nQ: What is the sku of the product given in web page with above url? Please answer  only sku.\nA:",
     };
