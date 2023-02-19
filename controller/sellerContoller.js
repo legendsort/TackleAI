@@ -32,7 +32,7 @@ const checkOneProductPage = async (Crawler, url) => {
   const openai = new OpenAIApi(configuration);
   const prompts = [
     url +
-      "\nQ: Is web page with above url for only one bait product? Please answer with 'Yes' or 'No'\nA:",
+      "\nQ: Above page is specific bait/lure product page? And does the page contain only one specific product title and description for bait/lure sale? If all my questions are all right, respond 'yes' otherwise 'no'\nA:",
   ];
   let isProductPage = false;
   for (const prompt of prompts) {
@@ -45,6 +45,7 @@ const checkOneProductPage = async (Crawler, url) => {
       });
 
       const answer = completion.data.choices[0].text.trim();
+      console.log("=====>", url, answer);
       if (answer.includes("Yes")) {
         isProductPage = true;
         break;
@@ -60,7 +61,7 @@ const filterProductURL = async (Crawler, urlList) => {
   let ans = [];
   for (let i = 0; i < urlList.length; i++) {
     const check = await checkOneProductPage(Crawler, urlList[i]);
-    console.log("---->", urlList[i], check);
+    // console.log("---->", urlList[i], check);
     if (check) ans.push(urlList[i]);
   }
   console.log("=====>");
@@ -103,6 +104,11 @@ module.exports = {
     const {url} = req.query;
     const {data, error} = await getProductList(url, 10);
     if (error) return sendResponse(res, 500, error, data);
-    return sendResponse(res, 200, "Successfully scrape urllist of all pages", data);
+    return sendResponse(
+      res,
+      200,
+      `Successfully scrape ${data.length} bait products from the website`,
+      data
+    );
   },
 };

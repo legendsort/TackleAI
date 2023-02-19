@@ -18,13 +18,13 @@ const scrapeDetail = async (url) => {
         "\nQ: How much does the product cost in web page with above url? I need only number(In case this is sold out, say 'Sold out')\nA:",
       title:
         url +
-        "\nQ: What is title of the product in web page with above url? Please answer only title.\nA:",
+        "\nQ: What is the title of the product given in web page with above url? Please answer only title.\nA:",
       description:
         url +
-        "\nQ: What is description of the product in web page with above url? Please answer only description,\nA:",
+        "\nQ: What is the description of the product given in web page with above url? Please answer only description,\nA:",
       sku:
         url +
-        "\nQ: What is the sku of the product in web page with above url? Please answer  only sku.\nA:",
+        "\nQ: What is the sku of the product given in web page with above url? Please answer  only sku.\nA:",
     };
 
     const openai = new OpenAIApi(configuration);
@@ -49,7 +49,7 @@ const scrapeDetail = async (url) => {
     }
     const getImageLinkPrompt =
       url +
-      `\nQ: please provide the object array contains link and alt of current product's images  in web page with above url. Format like this: [{"type": 1, "url": "https://lin.com/test1", "alt": "Swim Bait"}, {"type": 1, "url": "https://lin.com/test2", "alt": "Wood Bait"}] /nA: `;
+      `\nQ: please provide the object array contains link and alt of current product's images in web page with above url. Format like this: [{"type": 1, "url": "https://lin.com/test1", "alt": "Swim Bait"}, {"type": 1, "url": "https://lin.com/test2", "alt": "Wood Bait"}] /nA: `;
 
     try {
       const completion = await openai.createCompletion({

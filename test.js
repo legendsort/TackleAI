@@ -58,12 +58,14 @@ const checkOneProductPage = async (url) => {
     model: "text-davinci-003",
     max_tokens: 500,
     n: 2,
-    prompt: url + "\nQ: Is web page with above url for only one bait product? \nA:",
+    prompt:
+      url +
+      "\nQ: Above page is about bait or lure product? And the page has only one product title and price and description for bait/lure product? If my questions are all right, respond 'yes' otherwise 'no'\nA:",
   });
   const answer = completion.data.choices[0].text.trim();
   // await Crawler.initBrowser();
 
-  console.log(answer, answer.length);
+  console.log(url, answer);
   // const check = answer === "Yes";
   // console.assert(answer === "Yes" || answer === "No");
   // console.log(answer);
@@ -87,14 +89,7 @@ const filterProductURL = async () => {
   return ans;
 };
 
-const urls = [
-  "https://trueswimbaits.com/collections/all",
-  "https://trueswimbaits.com/products/the-original-alabama-rig",
-  "https://trueswimbaits.com/products/team-true-bass-bundle-storm-trooper-hoodie-and-beanie",
-  "https://trueswimbaits.com/products/black-camo-hoodie-true-bass-fishing",
-  "https://trueswimbaits.com/products/truelock-underspin",
-  "https://trueswimbaits.com/products/true-bass-swimbait-little-head-4-5",
-];
+const urls = ["https://trueswimbaits.com/collections/all"];
 for (const url of urls) {
   checkOneProductPage(url);
 }

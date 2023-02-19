@@ -4,6 +4,7 @@ const {convertToSlug} = require("../helper");
 const socialList = require("../config/social.json");
 const rssList = require("../config/rss-feed.json");
 
+const skipUrlList = ["about", "account", "blog", "blogs", "new", "news", "cart"];
 const config = {
   width: 1800,
   height: 800,
@@ -58,12 +59,28 @@ class CrawlerService {
     }
   };
 
+  isProductUrl = (url) => {
+    const pathArray = url.split("/");
+    const category = pathArray[3];
+    if (
+      category === "cart" ||
+      category === "about" ||
+      category === "contact" ||
+      category === "blog" ||
+      category === "blogs" ||
+      category === "news" ||
+      category === "account"
+    )
+      return false;
+    return true;
+  };
+
   getAllUrl = async (url, page) => {
     const hrefs = await page.$$eval("a", (as) => as.map((a) => a.href.split("#")[0]));
 
     const realLink = [];
     for (const link of hrefs) {
-      if (await this.isSameDomain(url, link)) realLink.push(link);
+      if ((await this.isSameDomain(url, link)) && this.isProductUrl(link)) realLink.push(link);
     }
     return realLink;
   };
