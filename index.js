@@ -39,15 +39,4 @@ server.listen(port, () => {
 server.on("error", onError);
 server.on("listening", onListening);
 
-// periodically scrape
-const job = new CronJob(
-  "0 2 * * *",
-  async () => {
-    console.log("Automatically update start");
-    const data = await scrapeSellers();
-    console.log("Automatically update end");
-  },
-  null,
-  false
-);
-job.start();
+console.log(process.memoryUsage().heapUsed);

@@ -62,16 +62,11 @@ class CrawlerService {
   isProductUrl = (url) => {
     const pathArray = url.split("/");
     const category = pathArray[3];
-    if (
-      category === "cart" ||
-      category === "about" ||
-      category === "contact" ||
-      category === "blog" ||
-      category === "blogs" ||
-      category === "news" ||
-      category === "account"
-    )
-      return false;
+    for (const item of skipUrlList) {
+      if (category.includes(item)) {
+        return false;
+      }
+    }
     return true;
   };
 
@@ -101,9 +96,11 @@ class CrawlerService {
   //visit website with url
   visitPage = async (page, url) => {
     try {
-      await page.goto(url, {waitUntil: "domcontentloaded"});
+      await page.goto(url, {waitUntil: "networkidle2"});
+      return true;
     } catch (e) {
       console.log("Error when visit new page: ", e);
+      return false;
     }
   };
 
@@ -222,8 +219,9 @@ class CrawlerService {
     const avatarSelector = "link[rel*='icon']";
     const descSelector = "meta[name='description']";
 
-    await this.visitPage(this.page, url);
     try {
+      const checkSite = await this.visitPage(this.page, url);
+      if (checkSite === false) throw "Current web page is not valid";
       // get avatar link
       const avatarUrl = await this.getDataBySelector(this.page, avatarSelector, "href");
       // get description
@@ -268,17 +266,62 @@ class CrawlerService {
   };
 
   getText = async (url) => {
-    await this.visitPage(this.page, url);
+    const checkUrl = await this.visitPage(this.page, url);
+    if (checkUrl === false) return false;
     return this.page.$eval("*", (el) => {
       return el.innerText;
     });
   };
 
   getHTML = async (url) => {
-    await this.visitPage(this.page, url);
+    const checkUrl = await this.visitPage(this.page, url);
+    if (checkUrl === false) return false;
     return this.page.$eval("*", (el) => {
       if (el.innerText.length && el.innerText.length > 0) return el.outerHTML;
     });
+  };
+
+  getImages = async (url) => {
+    await this.visitPage(this.page, url);
+    const imageElementsHTML = await this.page.$$eval(
+      "img",
+      (imgs) => {
+        let answer = [];
+        for (const img of imgs) {
+          answer.push({
+            src: img.src,
+            alt: img.alt,
+            title: img.title,
+            class: img.class,
+          });
+        }
+        return answer;
+        // return JSON.stringify(answer);
+        // return "ASDASD";
+      }
+      // imgs.map((img) => img.outerHTML);
+    );
+
+    // const aElementHTML = await this.page.$$eval("a", (imgs) =>
+    //   // imgs.map((img) => img.outerHTML.replace(/(<a[^>]*>)\s*[\s\S]*?\s*(<\/a>)/gi, "$1$2"))
+    //   imgs.map((img) => {
+    //     return {
+    //       src: img.src,
+    //       alt: img.alt,
+    //       title: img.title,
+    //     };
+    //   })
+    // );
+    // return imageElementsHTML;
+    const answer = imageElementsHTML; //.concat(aElementHTML);
+    return answer;
+    const ans = answer.filter((data) => data.src !== undefined && data.src !== "");
+    console.log(ans);
+    return ans;
+    // const ans = answer.filter((data) => data.src !== "");
+    // console.log(ans, ans.length)
+    // return ans;
+    return answer;
   };
 }
 

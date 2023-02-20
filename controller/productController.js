@@ -13,29 +13,32 @@ const scrapeDetail = async (url) => {
       apiKey: apiKey,
     });
     let text = await Crawler.getText(url);
-    console.log(text);
-    if (text.length > 300) text = text.substr(0, 300);
+    if (text === false) throw "Url is not valid";
+    let image = await Crawler.getImages(url);
+
+    if (text.length > 4000) text = text.substr(0, 4000);
+    if (image.length > 4000) image = image.substr(0, 4000);
     const query = {
       price:
         text +
         "\n" +
         url +
-        "\nQ: How much does the product cost in web page with above url? I need only number(In case this is sold out, respond with only previous pirce number')\nA:",
+        "\nQ: What is the price of the product according to text? (In case sold out, respond with only previous pirce number.)I need only number\nA:",
       title:
         text +
         "\n" +
         url +
-        "\nQ: What is the title of the product given in web page with above url? Please answer only title.\nA:",
+        "\nQ: What is the title of the product according to text? Please answer only title.\nA:",
       description:
         text +
         "\n" +
         url +
-        "\nQ: What is the description of the product given in web page with above url? Please answer only description,\nA:",
+        "\nQ: What is the description of the product according to text? Please answer only description,\nA:",
       sku:
         text +
         "\n" +
         url +
-        "\nQ: What is the sku of the product given in web page with above url? Please answer  only sku.\nA:",
+        "\nQ: What is the sku of the product according to text? Please answer only sku. If not defined, reponsd only None\nA:",
     };
 
     const openai = new OpenAIApi(configuration);
@@ -55,13 +58,17 @@ const scrapeDetail = async (url) => {
 
         const answer = completion.data.choices[0].text.trim();
         console.log("===========>", key, answer);
+        if (key === "sku" && answer === "None") answer = null;
         response[key] = answer;
       } catch (e) {}
     }
+    console.log(image);
     const getImageLinkPrompt =
+      "Information: " +
+      image +
+      "\n\n URL: " +
       url +
-      `\nQ: please provide the object array contains link and alt of current product's images in web page with above url. Format like this: [{"type": 1, "url": "https://lin.com/test1", "alt": "Swim Bait"}, {"type": 1, "url": "https://lin.com/test2", "alt": "Wood Bait"}] /nA: `;
-
+      `\nQ: I give you the image dict with src, alt and title. And also give you the url of the website. This page is for one bait product. I want to get the image links of only current focused product. Please respond. Format like this: [{"type": 1, "url": "https://lin.com/test1", "alt": "Swim Bait"}, {"type": 1, "url": "https://lin.com/test2", "alt": "Wood Bait"}] \nA: `;
     try {
       const completion = await openai.createCompletion({
         model: "text-davinci-003",

@@ -32,7 +32,7 @@ const checkOneProductPage = async (Crawler, url) => {
   const openai = new OpenAIApi(configuration);
   const prompts = [
     url +
-      "\nQ: Above page is specific bait/lure product page? And does the page contain only one specific product title and description for bait/lure sale? If all my questions are all right, respond 'yes' otherwise 'no'\nA:",
+      "\nQ: Above page is specific bait/lure product page for one? And does the page contain only one specific product title and description for bait/lure sale? If all my questions are all right, respond 'yes' otherwise 'no'\nA:",
   ];
   let isProductPage = false;
   for (const prompt of prompts) {
@@ -74,8 +74,11 @@ const getProductList = async (url, step) => {
   try {
     await Crawler.init();
     let urlList = [];
+    const checkUrl = await Crawler.visitPage(Crawler.page, url);
+    if (checkUrl === false) throw "Url is not valid";
     await Crawler.visitAll(url, step, urlList);
     console.log(urlList);
+
     const productUrlList = await filterProductURL(Crawler, urlList);
     console.log("FINISH");
     await Crawler.initBrowser();
