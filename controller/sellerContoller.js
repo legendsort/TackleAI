@@ -16,7 +16,6 @@ const scrapeSeller = async (url) => {
     };
   } catch (e) {
     await Crawler.initBrowser();
-    console.log(e);
     return {
       data: null,
       error: e,
@@ -32,7 +31,9 @@ const checkOneProductPage = async (Crawler, url) => {
   const openai = new OpenAIApi(configuration);
   const prompts = [
     url +
-      "\nQ: Above page is specific bait/lure product page for one? And does the page contain only one specific product title and description for bait/lure sale? If all my questions are all right, respond 'yes' otherwise 'no'\nA:",
+      "\nI gave you the list of urls\n" +
+      "Question: Please find bait product pages for sale from these urls. please answer with JSON of list of urls" +
+      "\n\nA: ",
   ];
   let isProductPage = false;
   for (const prompt of prompts) {
@@ -45,12 +46,15 @@ const checkOneProductPage = async (Crawler, url) => {
       });
 
       const answer = completion.data.choices[0].text.trim();
-      console.log("=====>", url, answer);
+
+      console.log("=====>", url, answer, JSON.parse(answer));
+      return JSON.parse(answer);
       if (answer.includes("Yes")) {
         isProductPage = true;
         break;
       }
     } catch (e) {
+      return [];
       continue;
     }
   }
@@ -58,14 +62,15 @@ const checkOneProductPage = async (Crawler, url) => {
 };
 
 const filterProductURL = async (Crawler, urlList) => {
-  let ans = [];
-  for (let i = 0; i < urlList.length; i++) {
-    const check = await checkOneProductPage(Crawler, urlList[i]);
-    // console.log("---->", urlList[i], check);
-    if (check) ans.push(urlList[i]);
-  }
-  console.log("=====>");
-  console.log(ans);
+  const ans = await checkOneProductPage(Crawler, urlList);
+  // let ans = [];
+  // for (let i = 0; i < urlList.length; i++) {
+  //   const check = await checkOneProductPage(Crawler, urlList[i]);
+  //   // console.log("---->", urlList[i], check);
+  //   if (check) ans.push(urlList[i]);
+  // }
+  // console.log("=====>");
+  // console.log(ans);
   return ans;
 };
 

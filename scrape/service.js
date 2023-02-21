@@ -252,7 +252,7 @@ class CrawlerService {
       return newMaker;
     } catch (e) {
       console.log("Cannot fetch information from the site", e);
-      return maker;
+      throw e;
     }
   };
 

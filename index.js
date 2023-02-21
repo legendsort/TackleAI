@@ -1,6 +1,5 @@
 require("dotenv").config();
 const http = require("http");
-const CronJob = require("cron").CronJob;
 const debug = require("debug")("genux-service:server");
 
 const app = require("./app");

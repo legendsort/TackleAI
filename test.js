@@ -2,6 +2,7 @@ const CrawlerService = require("./scrape/service");
 const fs = require("fs");
 const axios = require("axios");
 const {Configuration, OpenAIApi} = require("openai");
+require("dotenv").config();
 
 const content = "Some content!";
 
@@ -31,8 +32,7 @@ const testScrapeAllURL = async (url) => {
 
 // testScrapeAllURL("https://rafascustombaits.com/");
 
-const apiKey = "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";
-
+const apiKey = process.env.OPENAI_API_KEY;
 const checkOneProductPage = async (url) => {
   // const Crawler = new CrawlerService();
   // await Crawler.init();
@@ -45,6 +45,25 @@ const checkOneProductPage = async (url) => {
     apiKey: apiKey,
   });
   const openai = new OpenAIApi(configuration);
+
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    max_tokens: 500,
+    n: 2,
+    prompt:
+      url +
+      "\nI gave you the list of urls\n" +
+      // "This web page is one page of shop web site for bait/lure.\n" +
+      "Question: Please find bait product pages for sale from these urls" +
+      // "Question: This product is cup?" +
+      // "Question: Image is smilar to fish?" +
+      "\n\nA: ",
+  });
+  const answer = completion.data.choices[0].text.trim();
+  // await Crawler.initBrowser();
+
+  console.log(url, answer);
+
   // const prompt =
   //   "Question 1: What is the meaning of life?\n\nQuestion 2: How do airplanes fly?\n\nQuestion 3: What are the symptoms of COVID-19?";
   // const completion = await openai.createCompletion({
@@ -54,18 +73,28 @@ const checkOneProductPage = async (url) => {
   //   n: 1,
   //   stop: "\n\n",
   // });
-  const completion = await openai.createCompletion({
-    model: "text-davinci-003",
-    max_tokens: 500,
-    n: 2,
-    prompt:
-      url +
-      "\nQ: Above page is about bait or lure product? And the page has only one product title and price and description for bait/lure product? If my questions are all right, respond 'yes' otherwise 'no'\nA:",
-  });
-  const answer = completion.data.choices[0].text.trim();
-  // await Crawler.initBrowser();
+  // const completion = await openai.createCompletion({
+  //   model: "text-davinci-003",
+  //   max_tokens: 500,
+  //   n: 2,
+  //   prompt:
+  //     url +
+  //     "\nI gave you the url of web page I am considering.\n" +
+  //     // "This web page is one page of shop web site for bait/lure.\n" +
+  //     "You can classify this webpage with 4 types\n" +
+  //     "1. Pages like homepage or introudction or contact or news or blog or account or about or cart page\n" +
+  //     "2. Product list page which list multiple products with short info.\n" +
+  //     "3. Product page for sale which has only one main product with detailed info for only one product includes price, description and several images. \n" +
+  //     "4. The other\n" +
+  //     "Question: Please respond only 'yes' if you think this page is 90% likely type 3 and the product is fish bait, otherwise 'no'" +
+  //     // "Question: This product is cup?" +
+  //     // "Question: Image is smilar to fish?" +
+  //     "\n\nA: ",
+  // });
+  // const answer = completion.data.choices[0].text.trim();
+  // // await Crawler.initBrowser();
 
-  console.log(url, answer);
+  // console.log(url, answer);
   // const check = answer === "Yes";
   // console.assert(answer === "Yes" || answer === "No");
   // console.log(answer);
@@ -89,9 +118,20 @@ const filterProductURL = async () => {
   return ans;
 };
 
-const urls = ["https://trueswimbaits.com/collections/all"];
-for (const url of urls) {
-  checkOneProductPage(url);
-}
+const urls = [
+  "https://sdgcustomlurecraft.com/shop/p/flicker-minnow",
+  "https://sdgcustomlurecraft.com/shop/p/sdg-logo-hat",
+  "https://sdgcustomlurecraft.com/shop/p/sdg-logo-t-shirt",
+  "https://sdgcustomlurecraft.com/shop/p/100-reidball-t-shirt-free-shipping",
+  "https://sdgcustomlurecraft.com/shop/p/sdg-mug",
+  "https://sdgcustomlurecraft.com/",
+  "https://sdgcustomlurecraft.com/shop",
+  "https://sdgcustomlurecraft.com/shop/p/finesse-bladed-jigs",
+];
+
+checkOneProductPage(urls);
+// for (const url of urls) {
+//   checkOneProductPage(url);
+// }
 // checkOneProductPage("https://trueswimbaits.com/products/ba-spinner-pre-order");
 // filterProductURL();
