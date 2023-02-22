@@ -96,10 +96,11 @@ class CrawlerService {
   //visit website with url
   visitPage = async (page, url) => {
     try {
-      await page.goto(url, {waitUntil: "networkidle2"});
+      await page.goto(url, {waitUntil: "domcontentloaded"});
       return true;
     } catch (e) {
-      console.log("Error when visit new page: ", e);
+      console.log("Error when visit new page: ", e.name, e.message);
+      if (e.name === "TimeoutError") throw "Timeout Error";
       return false;
     }
   };
@@ -283,45 +284,26 @@ class CrawlerService {
 
   getImages = async (url) => {
     await this.visitPage(this.page, url);
-    const imageElementsHTML = await this.page.$$eval(
-      "img",
-      (imgs) => {
-        let answer = [];
-        for (const img of imgs) {
-          answer.push({
-            src: img.src,
-            alt: img.alt,
-            title: img.title,
-            class: img.class,
-          });
-        }
-        return answer;
-        // return JSON.stringify(answer);
-        // return "ASDASD";
+    const imageElementsHTML = await this.page.$$eval("img", (imgs) => {
+      // return imgs.map((img) => img.src);
+      let answer = [];
+      for (const img of imgs) {
+        answer.push({
+          src: img.src,
+          alt: img.alt,
+          // class: img.classList.value,
+        });
       }
-      // imgs.map((img) => img.outerHTML);
-    );
-
-    // const aElementHTML = await this.page.$$eval("a", (imgs) =>
-    //   // imgs.map((img) => img.outerHTML.replace(/(<a[^>]*>)\s*[\s\S]*?\s*(<\/a>)/gi, "$1$2"))
-    //   imgs.map((img) => {
-    //     return {
-    //       src: img.src,
-    //       alt: img.alt,
-    //       title: img.title,
-    //     };
-    //   })
-    // );
+      return answer;
+      return JSON.stringify(answer);
+      return "ASDASD";
+      // }
+      // return imgs.map((img) => img.outerHTML);
+    });
     // return imageElementsHTML;
-    const answer = imageElementsHTML; //.concat(aElementHTML);
-    return answer;
-    const ans = answer.filter((data) => data.src !== undefined && data.src !== "");
-    console.log(ans);
-    return ans;
-    // const ans = answer.filter((data) => data.src !== "");
-    // console.log(ans, ans.length)
-    // return ans;
-    return answer;
+    return imageElementsHTML.filter(
+      (data) => data.src !== undefined && data.src !== "" && data.src.includes("http")
+    );
   };
 }
 

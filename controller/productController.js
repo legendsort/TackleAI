@@ -17,7 +17,6 @@ const scrapeDetail = async (url) => {
     let image = await Crawler.getImages(url);
 
     if (text.length > 4000) text = text.substr(0, 4000);
-    if (image.length > 4000) image = image.substr(0, 4000);
     const query = {
       price:
         text +
@@ -38,7 +37,7 @@ const scrapeDetail = async (url) => {
         text +
         "\n" +
         url +
-        "\nQ: What is the sku of the product according to text? Please answer only sku. If not defined, reponsd only None\nA:",
+        "\nQ: What is the sku of the product according to text? Please answer only sku. If not defined, repond only None\nA:",
     };
 
     const openai = new OpenAIApi(configuration);
@@ -62,27 +61,14 @@ const scrapeDetail = async (url) => {
         response[key] = answer;
       } catch (e) {}
     }
-    console.log(image);
-    const getImageLinkPrompt =
-      "Information: " +
-      image +
-      "\n\n URL: " +
-      url +
-      `\nQ: I give you the image dict with src, alt and title. And also give you the url of the website. This page is for one bait product. I want to get the image links of only current focused product. Please respond. Format like this: [{"type": 1, "url": "https://lin.com/test1", "alt": "Swim Bait"}, {"type": 1, "url": "https://lin.com/test2", "alt": "Wood Bait"}] \nA: `;
-    try {
-      const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        max_tokens: 2000,
-        n: 1,
-        prompt: getImageLinkPrompt,
-      });
-      const answer = completion.data.choices[0].text.trim();
-      console.log(answer);
-      const media = JSON.parse(answer);
-      response.media = media;
-    } catch (e) {
-      console.log(e);
-    }
+    const media = image.map((img) => {
+      return {
+        type: 1,
+        url: img.src,
+        alt: img.alt,
+      };
+    });
+    response.media = media;
 
     await Crawler.initBrowser();
 

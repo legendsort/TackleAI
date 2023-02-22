@@ -129,7 +129,7 @@ const urls = [
   "https://sdgcustomlurecraft.com/shop/p/finesse-bladed-jigs",
 ];
 
-checkOneProductPage(urls);
+// checkOneProductPage(urls);
 // for (const url of urls) {
 //   checkOneProductPage(url);
 // }
