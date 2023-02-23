@@ -8,7 +8,7 @@ const skipUrlList = ["about", "account", "blog", "blogs", "new", "news", "cart"]
 const config = {
   width: 1800,
   height: 800,
-  headless: false,
+  headless: true,
   timeout: 120000,
   ignoreHTTPSErrors: true,
   executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",

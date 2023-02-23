@@ -38,4 +38,4 @@ server.listen(port, () => {
 server.on("error", onError);
 server.on("listening", onListening);
 
-console.log(process.memoryUsage().heapUsed);
+module.exports = app;
