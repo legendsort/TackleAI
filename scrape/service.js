@@ -8,13 +8,8 @@ const rssList = require("../config/rss-feed.json");
 
 const skipUrlList = ["about", "account", "blog", "blogs", "new", "news", "cart"];
 const chromiumPath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-
 const config = {
-  width: 1800,
-  height: 800,
-  headless: true,
-  timeout: 120000,
-  ignoreHTTPSErrors: true,
+  headless: edgeChromium.headless,
   args: edgeChromium.args,
 };
 
@@ -46,7 +41,7 @@ class CrawlerService {
 
   //launch Chromium broser
   launchBrowser = async () => {
-    console.log(await edgeChromium.executablePath);
+    console.log(await edgeChromium.executablePath, edgeChromium.headless);
     try {
       this.browser = await puppeteer.launch({
         ...config,
