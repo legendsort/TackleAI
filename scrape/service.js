@@ -11,8 +11,8 @@ const config = {
   headless: true,
   timeout: 120000,
   ignoreHTTPSErrors: true,
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
   executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-  args: [],
 };
 
 /**
