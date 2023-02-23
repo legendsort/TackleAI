@@ -30,5 +30,7 @@ app.use(
 const baseUrl = process.env.BASE_URL;
 app.use(baseUrl + "/seller", sellerRouter);
 app.use(baseUrl + "/product", productRouter);
-
+app.use("/", (req, res) => {
+  res.send("Hello, this is api for tackle net");
+});
 module.exports = app;
