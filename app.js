@@ -39,6 +39,7 @@ app.use("/a", async (req, res) => {
     args: chrome.args,
     executablePath: await chrome.executablePath,
     headless: chrome.headless,
+    timeout: 600000,
   });
 
   const page = await browser.newPage();
