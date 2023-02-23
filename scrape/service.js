@@ -1,15 +1,13 @@
-const puppeteer = require("puppeteer-extra");
+const puppeteer = require("puppeteer-core");
+const edgeChromium = require("chrome-aws-lambda");
+
 const makerList = require("../config/maker.json");
 const {convertToSlug} = require("../helper");
 const socialList = require("../config/social.json");
 const rssList = require("../config/rss-feed.json");
 
 const skipUrlList = ["about", "account", "blog", "blogs", "new", "news", "cart"];
-const chromiumPath = process.env.CHROMIUM;
-const deploy = process.env.DEPLOY;
-
-const executablePath =
-  deploy === "false" ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" : chromiumPath;
+const chromiumPath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 
 const config = {
   width: 1800,
@@ -17,8 +15,7 @@ const config = {
   headless: true,
   timeout: 120000,
   ignoreHTTPSErrors: true,
-  args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  executablePath: executablePath,
+  args: edgeChromium.args,
 };
 
 /**
@@ -49,8 +46,12 @@ class CrawlerService {
 
   //launch Chromium broser
   launchBrowser = async () => {
+    console.log(await edgeChromium.executablePath);
     try {
-      this.browser = await puppeteer.launch(config);
+      this.browser = await puppeteer.launch({
+        ...config,
+        executablePath: (await edgeChromium.executablePath) || chromiumPath,
+      });
     } catch (e) {
       console.log("Error occured when launching chromium: ", e);
     }
