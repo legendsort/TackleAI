@@ -45,6 +45,6 @@ app.use("/a", async (req, res) => {
   await page.goto(`https://google.com`);
 
   let content = await page.content();
-  res.send("Hello, this is api for tackle net", content);
+  res.send(content);
 });
 module.exports = app;
