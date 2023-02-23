@@ -5,6 +5,12 @@ const socialList = require("../config/social.json");
 const rssList = require("../config/rss-feed.json");
 
 const skipUrlList = ["about", "account", "blog", "blogs", "new", "news", "cart"];
+const chromiumPath = process.env.CHROMIUM;
+const deploy = process.env.DEPLOY;
+
+const executablePath =
+  deploy === "false" ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" : chromiumPath;
+
 const config = {
   width: 1800,
   height: 800,
@@ -12,7 +18,7 @@ const config = {
   timeout: 120000,
   ignoreHTTPSErrors: true,
   args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  executablePath: executablePath,
 };
 
 /**
