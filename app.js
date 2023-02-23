@@ -9,6 +9,9 @@ const cookieParser = require("cookie-parser");
 const productRouter = require("./routes/productRouter");
 const sellerRouter = require("./routes/sellerRouter");
 
+const puppeteer = require("puppeteer-core");
+const chrome = require("chrome-aws-lambda");
+
 // express settings
 const app = express();
 app.use(logger("dev"));
@@ -30,7 +33,18 @@ app.use(
 const baseUrl = process.env.BASE_URL;
 app.use(baseUrl + "/seller", sellerRouter);
 app.use(baseUrl + "/product", productRouter);
-app.use("/", (req, res) => {
-  res.send("Hello, this is api for tackle net");
+app.use("/a", async (req, res) => {
+  console.log(chrome.headless);
+  const browser = await puppeteer.launch({
+    args: chrome.args,
+    executablePath: await chrome.executablePath,
+    headless: chrome.headless,
+  });
+
+  const page = await browser.newPage();
+  await page.goto(`https://google.com`);
+
+  let content = await page.content();
+  res.send("Hello, this is api for tackle net", content);
 });
 module.exports = app;
