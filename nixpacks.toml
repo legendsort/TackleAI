@@ -1,4 +1,4 @@
-[phases.setup];
+[phases.setup]
 aptPkgs = [
   "fonts-liberation",
   "libappindicator3-1",
@@ -19,4 +19,4 @@ aptPkgs = [
   "libxss1",
   "libxtst6",
   "xdg-utils",
-];
+]
