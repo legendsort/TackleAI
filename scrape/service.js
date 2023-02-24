@@ -41,11 +41,12 @@ class CrawlerService {
 
   //launch Chromium broser
   launchBrowser = async () => {
-    console.log(await edgeChromium.executablePath, edgeChromium.headless);
+    console.log(await edgeChromium.args);
     try {
       this.browser = await puppeteer.launch({
         ...config,
         executablePath: (await edgeChromium.executablePath) || chromiumPath,
+        headless: true,
       });
     } catch (e) {
       console.log("Error occured when launching chromium: ", e);
