@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 
 const productRouter = require("./routes/productRouter");
 const sellerRouter = require("./routes/sellerRouter");
+const tokenRouter = require("./routes/tokenRouter");
 
 // express settings
 const app = express();
@@ -30,6 +31,8 @@ app.use(
 const baseUrl = process.env.BASE_URL;
 app.use(baseUrl + "/seller", sellerRouter);
 app.use(baseUrl + "/product", productRouter);
+app.use(baseUrl + "/token", tokenRouter);
+
 app.use("/", (req, res) => {
   res.send("Hello, this is api for tackle net");
 });
