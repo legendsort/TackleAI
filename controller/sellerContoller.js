@@ -104,6 +104,7 @@ const getProductList = async (url, step) => {
 module.exports = {
   fetch: async (req, res) => {
     const {url} = req.query;
+    console.log(url);
     const {data, error} = await scrapeSeller(url);
     if (error) return sendResponse(res, 500, error, data);
     return sendResponse(res, 200, "Successfully scrape data of seller", data);
