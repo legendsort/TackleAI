@@ -98,7 +98,7 @@ class CrawlerService {
   //visit website with url
   visitPage = async (page, url) => {
     try {
-      await page.goto(url, {waitUntil: "domcontentloaded"});
+      await page.goto(url, {waitUntil: "networkidle2"});
       return true;
     } catch (e) {
       console.log("Error when visit new page: ", e.name, e.message);
@@ -293,7 +293,7 @@ class CrawlerService {
         answer.push({
           src: img.src,
           alt: img.alt,
-          // class: img.classList.value,
+          class: img.classList.value,
         });
       }
       return answer;
@@ -302,9 +302,13 @@ class CrawlerService {
       // }
       // return imgs.map((img) => img.outerHTML);
     });
+    console.log(imageElementsHTML);
     // return imageElementsHTML;
     return imageElementsHTML.filter(
-      (data) => data.src !== undefined && data.src !== "" && data.src.includes("http")
+      (data) =>
+        data.src !== undefined &&
+        data.src !== "" &&
+        (data.src.includes("http") || data.src.includes("cdn.shopify.com"))
     );
   };
 }

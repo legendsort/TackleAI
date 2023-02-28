@@ -61,15 +61,36 @@ const scrapeDetail = async (url) => {
         response[key] = answer;
       } catch (e) {}
     }
-    const media = image.map((img) => {
+
+    const allMedia = image.map((img) => {
       return {
         type: 1,
-        url: img.src,
+        src: img.src,
         alt: img.alt,
       };
     });
-    response.media = media;
+    console.log(allMedia);
+    const jsonData = {
+      url: url,
+      imageList: allMedia,
+    };
+    const mediaQuery =
+      JSON.stringify(jsonData) +
+      "\nQ: I gave you JSON string of current webpage url and list of all the image link and alt in there." +
+      "And this page is one product page. Please answer with JSON data of current bait product image info(Image should be exist and image should be only current product's image and pixel size should be bigger than 240px. please use same link) . schema must be array of {type:1, src: url, alt: string} \nA:";
+    console.log(mediaQuery);
+    try {
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        max_tokens: 2000,
+        n: 1,
+        prompt: mediaQuery,
+      });
 
+      const answer = completion.data.choices[0].text.trim();
+      console.log("===========>", JSON.parse(answer));
+      response.media = JSON.parse(answer);
+    } catch (e) {}
     await Crawler.initBrowser();
 
     return {
