@@ -3,7 +3,7 @@ const {sendResponse} = require("../helper");
 
 const generateAccessToken = (username) => {
   try {
-    const token = jwt.sign({username}, process.env.TOKEN_SECRET, {expiresIn: "1800s"});
+    const token = jwt.sign({username}, process.env.TOKEN_SECRET);
     return {
       data: token,
       error: null,
