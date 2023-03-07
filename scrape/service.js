@@ -10,7 +10,7 @@ const chromiumPath = process.env.CHROMIUM;
 const config = {
   width: 1800,
   height: 800,
-  headless: false,
+  headless: true,
   timeout: 120000,
   ignoreHTTPSErrors: true,
   args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -243,12 +243,13 @@ class CrawlerService {
       for (const [site, url] of Object.entries(socialList)) {
         const selector = `a[href*='${url}']`;
         const link = await this.getDataBySelector(this.page, selector, "href");
+        if(link === null) continue;
         socialUrl.push({
           url: link,
           type: site,
         });
       }
-      if (avatarUrl) newMaker.avatarUrl = avatarUrl;
+      if (avatarUrl) newMaker.avatar_url = avatarUrl;
       if (description) newMaker.description = description;
       if (socialUrl) newMaker.socials = socialUrl;
       if (rssFeed) newMaker.feed_url = rssFeed;
