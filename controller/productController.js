@@ -4,6 +4,14 @@ const {Configuration, OpenAIApi} = require("openai");
 
 const apiKey = process.env.OPENAI_API_KEY;
 
+const extractNumber = (str) => {
+  const match = str.match(/\d+/);
+  if (match) {
+    return parseInt(match[0]);
+  }
+  return null;
+}
+
 const scrapeDetail = async (url) => {
   const Crawler = new CrawlerService();
 
@@ -55,21 +63,27 @@ const scrapeDetail = async (url) => {
           prompt: value,
         });
 
-        const answer = completion.data.choices[0].text.trim();
+        let answer = completion.data.choices[0].text.trim();
         console.log("===========>", key, answer);
         if (key === "sku" && answer === "None") answer = null;
+        if (key === "price") {
+          answer = extractNumber(answer);
+        }
+        
+        if(answer === null) continue;
         response[key] = answer;
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     const allMedia = image.map((img) => {
       return {
         type: 1,
-        src: img.src,
+        url: img.src,
         alt: img.alt,
       };
     });
-    console.log(allMedia);
     const jsonData = {
       url: url,
       imageList: allMedia,
@@ -77,8 +91,7 @@ const scrapeDetail = async (url) => {
     const mediaQuery =
       JSON.stringify(jsonData) +
       "\nQ: I gave you JSON string of current webpage url and list of all the image link and alt in there." +
-      "And this page is one product page. Please answer with JSON data of current bait product image info(Image should be exist and image should be only current product's image and pixel size should be bigger than 240px. please use same link) . schema must be array of {type:1, src: url, alt: string} \nA:";
-    console.log(mediaQuery);
+      "And this page is one product page. Please answer with JSON data of current bait product image info(Image should be exist and image should be only current product's image and pixel size should be bigger than 240px. please use same link) . schema must be array of {type:1, url: url, alt: string} \nA:";
     try {
       const completion = await openai.createCompletion({
         model: "text-davinci-003",

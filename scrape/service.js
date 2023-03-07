@@ -303,7 +303,6 @@ class CrawlerService {
       // }
       // return imgs.map((img) => img.outerHTML);
     });
-    console.log(imageElementsHTML);
     // return imageElementsHTML;
     return imageElementsHTML.filter(
       (data) =>
