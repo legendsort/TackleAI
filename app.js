@@ -30,6 +30,11 @@ app.use(
   })
 );
 
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', 'https://tackle.net');
+  next();
+});
+
 // register route
 const baseUrl = process.env.BASE_URL;
 app.use(baseUrl + "/token", tokenRouter);
