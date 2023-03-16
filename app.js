@@ -14,7 +14,9 @@ const {authenticateToken} = require("./helper/index");
 // express settings
 const app = express();
 app.use(logger("dev"));
-app.use(cors());
+app.use(cors({
+  origin: 'https://tackle.net'
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
