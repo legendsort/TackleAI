@@ -9,6 +9,8 @@ app.set("port", port);
 
 //create server
 const server = http.createServer(app);
+const timeout = 10 * 60 * 1000;
+server.setTimeout(timeout);
 
 const onError = (error) => {
   if (error.syscall !== "listen") throw error;
