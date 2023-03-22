@@ -14,9 +14,6 @@ const {authenticateToken} = require("./helper/index");
 // express settings
 const app = express();
 app.use(logger("dev"));
-app.use(cors({
-  origin: 'https://tackle.net'
-}));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -29,11 +26,6 @@ app.use(
     parameterLimit: 5000,
   })
 );
-
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'https://tackle.net');
-  next();
-});
 
 // register route
 const baseUrl = process.env.BASE_URL;
