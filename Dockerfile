@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /etc/chromium.d/ \
     && /bin/echo
+    
 COPY . .
 
 EXPOSE 4000
