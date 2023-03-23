@@ -39,6 +39,7 @@ class CrawlerService {
         await this.browser.close();
       } catch (e) {
         console.log("Error occured when close chromium: ", e);
+        throw e;
       }
     }
   };
@@ -49,6 +50,7 @@ class CrawlerService {
       this.browser = await puppeteer.launch(config);
     } catch (e) {
       console.log("Error occured when launching chromium: ", e);
+      throw e;
     }
   };
   isSameDomain = async (url1, url2) => {
@@ -98,7 +100,7 @@ class CrawlerService {
   //visit website with url
   visitPage = async (page, url) => {
     try {
-      await page.goto(url, {waitUntil: "networkidle2"});
+      await page.goto(url, {waitUntil: "load", timeout: 120000});
       return true;
     } catch (e) {
       console.log("Error when visit new page: ", e.name, e.message);
