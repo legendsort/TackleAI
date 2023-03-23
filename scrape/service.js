@@ -100,7 +100,9 @@ class CrawlerService {
   //visit website with url
   visitPage = async (page, url) => {
     try {
+      console.log("Goto url");
       await page.goto(url, {waitUntil: "load", timeout: 120000});
+      console.log("Goto url end");
       return true;
     } catch (e) {
       console.log("Error when visit new page: ", e.name, e.message);
@@ -225,6 +227,7 @@ class CrawlerService {
     const descSelector = "meta[name='description']";
 
     try {
+      console.log("Visit url");
       const checkSite = await this.visitPage(this.page, url);
       if (checkSite === false) throw "Current web page is not valid";
       // get avatar link
