@@ -13,7 +13,10 @@ const config = {
   headless: true,
   timeout: 120000,
   ignoreHTTPSErrors: true,
-  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  args: [        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--disable-setuid-sandbox",
+        "--no-sandbox"],
   executablePath: chromiumPath,
 };
 
