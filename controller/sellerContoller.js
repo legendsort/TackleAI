@@ -4,7 +4,7 @@ const {Configuration, OpenAIApi} = require("openai");
 
 const apiKey = process.env.OPENAI_API_KEY;
 const scrapeSeller = async (url) => {
-  console.loG("Service crete")
+  console.log("Service crete")
   const Crawler = new CrawlerService();
   try {
     console.log("INIG")
