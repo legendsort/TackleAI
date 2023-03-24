@@ -4,12 +4,9 @@ const {Configuration, OpenAIApi} = require("openai");
 
 const apiKey = process.env.OPENAI_API_KEY;
 const scrapeSeller = async (url) => {
-  console.log("Service crete")
   const Crawler = new CrawlerService();
   try {
-    console.log("INIG")
     await Crawler.init();
-    console.log("start signinfo")
     const response = await Crawler.getSiteInfo(url);
 
     await Crawler.initBrowser();
@@ -51,7 +48,6 @@ const checkOneProductPage = async (Crawler, url) => {
 
       const answer = completion.data.choices[0].text.trim();
 
-      console.log("=====>", url, answer, JSON.parse(answer));
       return JSON.parse(answer);
       if (answer.includes("Yes")) {
         isProductPage = true;
@@ -67,14 +63,6 @@ const checkOneProductPage = async (Crawler, url) => {
 
 const filterProductURL = async (Crawler, urlList) => {
   const ans = await checkOneProductPage(Crawler, urlList);
-  // let ans = [];
-  // for (let i = 0; i < urlList.length; i++) {
-  //   const check = await checkOneProductPage(Crawler, urlList[i]);
-  //   // console.log("---->", urlList[i], check);
-  //   if (check) ans.push(urlList[i]);
-  // }
-  // console.log("=====>");
-  // console.log(ans);
   return ans;
 };
 
@@ -86,10 +74,8 @@ const getProductList = async (url, step) => {
     const checkUrl = await Crawler.visitPage(Crawler.page, url);
     if (checkUrl === false) throw "Url is not valid";
     await Crawler.visitAll(url, step, urlList);
-    console.log(urlList);
 
     const productUrlList = await filterProductURL(Crawler, urlList);
-    console.log("FINISH");
     await Crawler.initBrowser();
     return {
       data: productUrlList,

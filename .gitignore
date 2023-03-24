@@ -2,5 +2,3 @@
 node_modules
 package-lock.json
 .env
-test
-scrapeData.json

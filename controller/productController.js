@@ -64,7 +64,6 @@ const scrapeDetail = async (url) => {
         });
 
         let answer = completion.data.choices[0].text.trim();
-        console.log("===========>", key, answer);
         if (key === "sku" && answer === "None") answer = null;
         if (key === "price") {
           answer = extractNumber(answer);
@@ -101,7 +100,6 @@ const scrapeDetail = async (url) => {
       });
 
       const answer = completion.data.choices[0].text.trim();
-      console.log("===========>", JSON.parse(answer));
       response.media = JSON.parse(answer);
     } catch (e) {}
     await Crawler.initBrowser();
