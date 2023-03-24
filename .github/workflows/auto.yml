@@ -1,0 +1,34 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy files to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: '138.68.128.105'
+          username: "root"
+          key: "nVGghLAM8YNyqak"
+          source: '.' 
+
+          target: './'
+
+      - name: SSH into VPS and run commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: '138.68.128.105'
+          username: 'root'
+          key: "nVGghLAM8YNyqak"
+          script: |
+            cd "./"
+            git pull

@@ -4,9 +4,9 @@ const {Configuration, OpenAIApi} = require("openai");
 
 const apiKey = process.env.OPENAI_API_KEY;
 const scrapeSeller = async (url) => {
+  console.loG("Service crete")
+  const Crawler = new CrawlerService();
   try {
-    console.loG("Service crete")
-    const Crawler = new CrawlerService();
     console.log("INIG")
     await Crawler.init();
     console.log("start signinfo")
@@ -18,8 +18,8 @@ const scrapeSeller = async (url) => {
       error: null,
     };
   } catch (e) {
-    await Crawler.initBrowser();
     console.log(e);
+    await Crawler.initBrowser();
     return {
       data: null,
       error: e,
@@ -108,7 +108,7 @@ const getProductList = async (url, step) => {
 module.exports = {
   fetch: async (req, res) => {
     const {url} = req.query;
-    console.log(url);
+    console.log("------>", url);
     const {data, error} = await scrapeSeller(url);
 
     if (error) return sendResponse(res, 500, error, data);
