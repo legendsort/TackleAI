@@ -30,35 +30,21 @@ const checkOneProductPage = async (Crawler, url) => {
   });
 
   const openai = new OpenAIApi(configuration);
-  const prompts = [
-    url +
-      "\nI gave you the list of urls\n" +
-      "Question: Please find bait product pages for sale from these urls. please answer with JSON of list of urls" +
-      "\n\nA: ",
-  ];
-  let isProductPage = false;
-  for (const prompt of prompts) {
-    try {
-      const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        max_tokens: 2000,
-        n: 1,
-        prompt: prompt,
-      });
 
-      const answer = completion.data.choices[0].text.trim();
-
-      return JSON.parse(answer);
-      if (answer.includes("Yes")) {
-        isProductPage = true;
-        break;
-      }
-    } catch (e) {
-      return [];
-      continue;
-    }
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {role: "system", content: `This is the list of urls of webpage: ${url}`},
+        {role: "user", content: "Please find bait product pages for sale from these urls. Please respond simply JSON data of list of urls  without any description or header. If you can't respond with []."},
+      ],
+    });
+    const content = completion.data.choices[0].message.content;
+    return JSON.parse(content);
+  } catch (e) {
+    console.log(e);
+    return null;
   }
-  return isProductPage;
 };
 
 const filterProductURL = async (Crawler, urlList) => {
