@@ -3,6 +3,20 @@ const CrawlerService = require("../scrape/service");
 const {Configuration, OpenAIApi} = require("openai");
 
 const apiKey = process.env.OPENAI_API_KEY;
+const chunkSize = 5000;
+
+const configuration = new Configuration({apiKey: apiKey});
+const openai = new OpenAIApi(configuration);
+
+const prompts = {
+  price:
+    "What is the price of the product according to content? (In case sold out, respond only previous pirce number.) Please responsd only number",
+  title: "What is the title of the product according to content? Please respond only title",
+  description:
+    "What is the description of the product  according to content? Please respond only description",
+  sku: "What is the sku of the product according to content? Please respond only with sku.  If not defined, respond only None",
+  media: "Please answer current bait product image information(Image should be exist and image should be only current product's image and pixel size should be bigger than 240px).Answer simply must be only JSON string of array of {type:1, url: url, alt: string}. Please respond simply JSON without any description or header"
+};
 
 const extractNumber = (str) => {
   const match = str.match(/\d+/);
@@ -10,6 +24,43 @@ const extractNumber = (str) => {
     return parseInt(match[0]);
   }
   return null;
+};
+
+const getAnswer = async (text, url, prompt) => {
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {role: "system", content: `This is the current webpage url: ${url}`},
+        {role: "system", content: `This is the content of this page: ${text}`},
+        {role: "user", content: prompt},
+      ],
+    });
+    const content = completion.data.choices[0].message.content;
+    return content;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
+const getMedia = async (media, url, prompt) => {
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {role: "system", content: `This is the current webpage url: ${url}`},
+        {role: "system", content: `This page is one bait product page`},
+        {role: "system", content: `This is the JSON data of all image urls and alt data in this page: ${JSON.stringify(media)}`},
+        {role: "user", content: prompt},
+      ],
+    });
+    const content = completion.data.choices[0].message.content;
+    return JSON.parse(content);
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 }
 
 const scrapeDetail = async (url) => {
@@ -17,65 +68,12 @@ const scrapeDetail = async (url) => {
 
   try {
     await Crawler.init();
-    const configuration = new Configuration({
-      apiKey: apiKey,
-    });
+
     let text = await Crawler.getText(url);
     if (text === false) throw "Url is not valid";
     let image = await Crawler.getImages(url);
 
-    if (text.length > 4000) text = text.substr(0, 4000);
-    const query = {
-      price:
-        text +
-        "\n" +
-        url +
-        "\nQ: What is the price of the product according to text? (In case sold out, respond with only previous pirce number.)I need only number\nA:",
-      title:
-        text +
-        "\n" +
-        url +
-        "\nQ: What is the title of the product according to text? Please answer only title.\nA:",
-      description:
-        text +
-        "\n" +
-        url +
-        "\nQ: What is the description of the product according to text? Please answer only description,\nA:",
-      sku:
-        text +
-        "\n" +
-        url +
-        "\nQ: What is the sku of the product according to text? Please answer only sku. If not defined, repond only None\nA:",
-    };
-
-    const openai = new OpenAIApi(configuration);
-
-    let response = {
-      url: url,
-    };
-
-    for (const [key, value] of Object.entries(query)) {
-      try {
-        const completion = await openai.createCompletion({
-          model: "text-davinci-003",
-          max_tokens: 2000,
-          n: 1,
-          prompt: value,
-        });
-
-        let answer = completion.data.choices[0].text.trim();
-        if (key === "sku" && answer === "None") answer = null;
-        if (key === "price") {
-          answer = extractNumber(answer);
-        }
-        
-        if(answer === null) continue;
-        response[key] = answer;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
+    if (text.length > chunkSize) text = text.substr(0, chunkSize);
     const allMedia = image.map((img) => {
       return {
         type: 1,
@@ -83,25 +81,19 @@ const scrapeDetail = async (url) => {
         alt: img.alt,
       };
     });
-    const jsonData = {
-      url: url,
-      imageList: allMedia,
-    };
-    const mediaQuery =
-      JSON.stringify(jsonData) +
-      "\nQ: I gave you JSON string of current webpage url and list of all the image link and alt in there." +
-      "And this page is one product page. Please answer with JSON data of current bait product image info(Image should be exist and image should be only current product's image and pixel size should be bigger than 240px. please use same link) . schema must be array of {type:1, url: url, alt: string} \nA:";
-    try {
-      const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        max_tokens: 2000,
-        n: 1,
-        prompt: mediaQuery,
-      });
+    const price = extractNumber(await getAnswer(text, url, prompts.price));
+    const title = await getAnswer(text, url, prompts.title);
+    const description = await getAnswer(text, url, prompts.description);
+    const sku = await getAnswer(text, url, prompts.sku);
+    const media = await getMedia(allMedia, url, prompts.media);
 
-      const answer = completion.data.choices[0].text.trim();
-      response.media = JSON.parse(answer);
-    } catch (e) {}
+    let response = {
+      price,
+      title,
+      description,
+      media
+    }
+    if(sku !== 'None') response.sku = sku;
     await Crawler.initBrowser();
 
     return {

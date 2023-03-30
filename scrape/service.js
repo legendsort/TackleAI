@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer-extra");
-const makerList = require("../config/maker.json");
 const {convertToSlug} = require("../helper");
 const socialList = require("../config/social.json");
 const rssList = require("../config/rss-feed.json");
@@ -182,7 +181,7 @@ class CrawlerService {
   };
 
   //execute the scraping script
-  execute = async () => {
+  execute = async (makerList) => {
     // iterate the maker list
     for (const {makerName, script} of makerList) {
       for (const scriptItem of script) {
@@ -266,15 +265,6 @@ class CrawlerService {
     }
   };
 
-  //get item
-  getItems = async (maker) => {
-    if (maker.id === 9) {
-      const data = await this.execute();
-      return data;
-    }
-    return null;
-  };
-
   getText = async (url) => {
     const checkUrl = await this.visitPage(this.page, url);
     if (checkUrl === false) return false;
@@ -300,7 +290,6 @@ class CrawlerService {
         answer.push({
           src: img.src,
           alt: img.alt,
-          class: img.classList.value,
         });
       }
       return answer;
