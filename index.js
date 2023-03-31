@@ -13,7 +13,7 @@ app.set("port", port);
 
 //create server with set timeout limit
 const server = http.createServer(app);
-const timeout = 10 * 60 * 1000;
+const timeout = process.env.TIME_OUT * 60 * 1000;
 server.setTimeout(timeout);
 
 //function to handle errors related to the server connection

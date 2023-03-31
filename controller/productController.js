@@ -19,7 +19,7 @@ const prompts = {
   title: "What is the title of the product according to content? Please respond only title",
   description:
     "What is the description of the product  according to content? Please respond only description",
-  sku: "What is the sku of the product according to content? Please respond only with sku.  If not defined, respond only None",
+  sku: "What is the sku of the product according to content? Please respond only with sku.  If not defined, respond only `None`",
   media:
     "Please answer current bait product image information(Image should be exist and image should be only current product's image and pixel size should be bigger than 240px).Answer simply must be only JSON string of array of {type:1, url: url, alt: string}. Please respond simply JSON without any description or header",
 };
