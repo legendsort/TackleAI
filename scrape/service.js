@@ -91,32 +91,32 @@ class CrawlerService {
       if ((await this.isSameDomain(url, link)) && this.isProductUrl(link)) realLink.push(link);
     }
     return realLink;
-  }
+  };
 
   visitAll = async (url, step, ans) => {
     // Check if URL has already been visited
     if (ans.includes(url)) return;
-  
+
     // Visit the page with given URL
     await this.visitPage(this.page, url);
     url = this.page.url();
-  
+
     // Check if URL has already been visited after visiting the page
     if (ans.includes(url)) return;
-  
+
     // Add the visited URL to the answer list
     ans.push(url);
-  
+
     // Return if step is 0 (no more steps needed)
     if (step == 0) return;
-  
+
     // Get all URLs on the visited page and visit them recursively
     const hrefs = await this.getAllUrl(url, this.page);
     for (const href of hrefs) {
       await this.visitAll(href, step - 1, ans);
     }
   };
-  
+
   // Visit website with given URL
   visitPage = async (page, url) => {
     try {
@@ -128,7 +128,7 @@ class CrawlerService {
       return false;
     }
   };
-  
+
   // Open a new blank page
   openNewPage = async () => {
     try {
@@ -137,7 +137,7 @@ class CrawlerService {
       console.log("Error when creating new page: ", e);
     }
   };
-  
+
   // Get URLs of each bait from the shop page
   getUrlList = async (page, selector) => {
     try {
@@ -148,7 +148,7 @@ class CrawlerService {
       return [];
     }
   };
-  
+
   /**
    * Scrape data from a given URL and response schema
    * @param {chromium page object} page
@@ -190,7 +190,7 @@ class CrawlerService {
       console.log("Error when scraping detailed data: ", e);
     }
   };
-  
+
   // Validate and format the response
   validResponse = (response) => {
     if (response.media)
@@ -199,7 +199,7 @@ class CrawlerService {
       });
     return response;
   };
-  
+
   // Execute the scraping script
   execute = async (makerList) => {
     // Iterate through the maker list

@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
-const { sendResponse } = require("../helper");
+const {sendResponse} = require("../helper");
 
 // Function to generate a JWT token based on the provided username
 const generateAccessToken = (username) => {
   try {
     // Create a token using the provided username and token secret from environment variables
-    const token = jwt.sign({ username }, process.env.TOKEN_SECRET);
+    const token = jwt.sign({username}, process.env.TOKEN_SECRET);
     // Return the token as part of a data object
     return {
       data: token,
@@ -25,9 +25,9 @@ module.exports = {
   // Function to get a JWT token based on the provided username query parameter
   getToken: (req, res) => {
     // Get the username from the query parameter
-    const { username } = req.query;
+    const {username} = req.query;
     // Generate a token based on the provided username
-    const { data, error } = generateAccessToken(username);
+    const {data, error} = generateAccessToken(username);
 
     // If an error occurred during token generation, send an error response
     if (error) return sendResponse(res, 500, error, data);

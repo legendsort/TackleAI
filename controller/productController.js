@@ -63,7 +63,9 @@ const getMedia = async (media, url, prompt) => {
         {role: "system", content: `This page is one bait product page`}, // A system message indicating that the page is a bait product page
         {
           role: "system",
-          content: `This is the JSON data of all image urls and alt data in this page: ${JSON.stringify(media)}`,
+          content: `This is the JSON data of all image urls and alt data in this page: ${JSON.stringify(
+            media
+          )}`,
         },
         {role: "user", content: prompt}, // A user message containing a prompt
       ],
