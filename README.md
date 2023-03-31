@@ -2,13 +2,7 @@
 <h1 align = "center" > Tackle Net Backend Project </h1>
 <br>
 
-<img src="https://badgen.net/badge/node/16.19.1/3988FB"/>
-<img src="https://badgen.net/badge/npm/8.19.3/3988FB"/>
-<img src="https://badgen.net/badge/openai/3.2.1/green"/>
-<img src="https://badgen.net/badge/chatgpt/turbo 3.5/green"/>
-<img src="https://badgen.net/badge/puppeteer/19.6.0/yellow"/>
-<img src="https://badgen.net/badge/ubuntu/22.10/orange"/>
-<img src="https://badgen.net/badge/docker/20.10.17/orange"/>
+<img src="https://badgen.net/badge/node/16.19.1/3988FB"/> <img src="https://badgen.net/badge/npm/8.19.3/3988FB"/> <img src="https://badgen.net/badge/openai/3.2.1/green"/> <img src="https://badgen.net/badge/chatgpt/turbo 3.5/green"/> <img src="https://badgen.net/badge/puppeteer/19.6.0/yellow"/> <img src="https://badgen.net/badge/ubuntu/22.10/orange"/> <img src="https://badgen.net/badge/docker/20.10.17/orange"/>
 
 ## Feature
 
