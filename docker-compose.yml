@@ -4,7 +4,7 @@ services:
   api:
     build: .
     ports:
-      - 80:80
+      - 4000:4000
     command: npm start
     container_name: tackleAI
     restart: unless-stopped
