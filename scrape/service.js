@@ -249,7 +249,6 @@ class CrawlerService {
     const descSelector = "meta[name='description']";
 
     try {
-      console.log("Visit url");
       const checkSite = await this.visitPage(this.page, url);
       if (checkSite === false) throw "Current web page is not valid";
       // get avatar link
@@ -286,7 +285,7 @@ class CrawlerService {
       throw e;
     }
   };
-
+  // get all text from the page
   getText = async (url) => {
     const checkUrl = await this.visitPage(this.page, url);
     if (checkUrl === false) return false;
@@ -294,7 +293,7 @@ class CrawlerService {
       return el.innerText;
     });
   };
-
+  // get html from the page
   getHTML = async (url) => {
     const checkUrl = await this.visitPage(this.page, url);
     if (checkUrl === false) return false;
@@ -302,7 +301,7 @@ class CrawlerService {
       if (el.innerText.length && el.innerText.length > 0) return el.outerHTML;
     });
   };
-
+  // get all images from the page
   getImages = async (url) => {
     await this.visitPage(this.page, url);
     const imageElementsHTML = await this.page.$$eval("img", (imgs) => {

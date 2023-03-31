@@ -35,7 +35,6 @@ const authenticateToken = (req, res, next) => {
 
   // Verify the token and extract user information from it
   jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-    console.log(err);
     // If verification fails, return unauthenticated error
     if (err) return sendResponse(res, 403, "Unauthenticated");
     // If verification succeeds, attach user information to request object and call next middleware
