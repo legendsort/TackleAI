@@ -249,6 +249,7 @@ class CrawlerService {
     const descSelector = "meta[name='description']";
     
     try {
+      console.log(url, this.page);
       const checkSite = await this.visitPage(this.page, url);
       console.log("check site", checkSite);
       if (checkSite === false) throw "Current web page is not valid";
@@ -257,7 +258,7 @@ class CrawlerService {
       console.log({avatarUrl});
       // get description
       const description = await this.getDataBySelector(this.page, descSelector, "content");
-      // get rss feed
+      // get rss feeds
       let rssFeed = "";
       for (const rss of rssList) {
         const response = await this.getDataBySelector(this.page, rss, "href");
