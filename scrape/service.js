@@ -50,6 +50,20 @@ class CrawlerService {
   
   };
 
+  test = async() => {
+    try {
+      await this.initBrowser();
+      await this.launchBrowser();
+      console.log("Launch success");
+      this.page = await this.openNewPage();
+      console.log("open New page")
+      await this.page.goto("https://google.com", {waitUntil: "domcontentloaded", timeout: 120000});
+      return "Success";
+    } catch(e) {
+      console.log("ERR: ", e);
+      return e;
+    }
+  }
   // Method to close any existing browser instances
   initBrowser = async () => {
     if (this.browser) {
