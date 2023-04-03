@@ -35,6 +35,19 @@ class CrawlerService {
     await this.initBrowser();
     await this.launchBrowser();
     this.page = await this.openNewPage();
+
+    // 1. Intercept network requests.
+    await this.page.setRequestInterception(true);
+  
+    this.page.on('request', req => {
+      // 2. Ignore requests for resources that don't produce DOM
+      // (images, stylesheets, media).
+      console.log(req.url());
+  
+      // 3. Pass through all other requests.
+      req.continue();
+    });
+  
   };
 
   // Method to close any existing browser instances
