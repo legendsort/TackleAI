@@ -19,7 +19,7 @@ const scrapeSeller = async (url) => {
   try {
     // Initializes the `Crawler` object and runs the `init()` function.
     await Crawler.init();
-
+    console.log("scrape seller")
     // Gets site information by calling the `getSiteInfo` method of the `Crawler` object and passing in the URL.
     const response = await Crawler.getSiteInfo(url);
 
@@ -132,6 +132,7 @@ module.exports = {
   fetch: async (req, res) => {
     // Extracts the `url` value from the query parameters passed in the GET request.
     const {url} = req.query;
+    console.log({url});
 
     // Calls the `scrapeSeller()` function and passes in the `url` value.
     const {data, error} = await scrapeSeller(url);

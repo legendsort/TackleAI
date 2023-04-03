@@ -247,12 +247,14 @@ class CrawlerService {
 
     const avatarSelector = "link[rel*='icon']";
     const descSelector = "meta[name='description']";
-
+    
     try {
       const checkSite = await this.visitPage(this.page, url);
+      console.log("check site", checkSite);
       if (checkSite === false) throw "Current web page is not valid";
       // get avatar link
       const avatarUrl = await this.getDataBySelector(this.page, avatarSelector, "href");
+      console.log({avatarUrl});
       // get description
       const description = await this.getDataBySelector(this.page, descSelector, "content");
       // get rss feed
