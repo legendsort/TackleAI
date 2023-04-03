@@ -120,7 +120,7 @@ class CrawlerService {
   // Visit website with given URL
   visitPage = async (page, url) => {
     try {
-      await page.goto(url, {waitUntil: "load", timeout: 1200000});
+      await page.goto(url, {waitUntil: "load", timeout: 120000});
       return true;
     } catch (e) {
       console.log("Error when visiting new page: ", e.name, e.message);
