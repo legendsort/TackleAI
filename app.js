@@ -14,6 +14,13 @@ const {authenticateToken} = require("./helper/index");
 
 // instantiate an express server
 const app = express();
+app.use((req, res, next) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 // add middleware for logging and parsing incoming data
 app.use(logger("dev"));

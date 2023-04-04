@@ -58,12 +58,12 @@ const checkOneProductPage = async (url) => {
       model: "gpt-3.5-turbo",
       messages: [
         // A system message containing the url of webpage
-        {role: "system", content: `This is the list of urls of webpage: ${url}`},
+        {role: "system", content: `This is the JSON data of list of urls of webpage: ${JSON.stringify(url)}`},
         // A user message requesting information about bait product pages
         {
           role: "user",
           content:
-            "Please find bait product pages for sale from these urls. Please respond simply JSON data of list of urls  without any description or header. If you can't respond with [].",
+            "Please find bait product pages for sale from these urls. Please respond simply JSON data of list of urls  without any description or header. If you can't respond only [].",
         },
       ],
     });
@@ -79,9 +79,9 @@ const checkOneProductPage = async (url) => {
 };
 
 // Defines the `filterProductURL` function that handles the filtering of bait product pages from a given list of URLs.
-const filterProductURL = async (Crawler, urlList) => {
+const filterProductURL = async (urlList) => {
   // Calls the `checkOneProductPage()` function and returns the results.
-  const ans = await checkOneProductPage(Crawler, urlList);
+  const ans = await checkOneProductPage(urlList);
   return ans;
 };
 
@@ -103,9 +103,9 @@ const getProductList = async (url, step) => {
 
     // find all sub urls from website and saves it in urlList
     await Crawler.visitAll(url, step, urlList);
-
+    console.log({urlList})
     // Calls the `filterProductURL()` method of the `Crawler` object and passes in the `Crawler` object and `urlList`.
-    const productUrlList = await filterProductURL(Crawler, urlList);
+    const productUrlList = await filterProductURL(urlList);
 
     // Initializes `Crawler` within a browser context and returns data and error information.
     await Crawler.initBrowser();
