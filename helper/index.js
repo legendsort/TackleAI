@@ -17,7 +17,8 @@ const sendResponse = (res, status = 200, message = "", data = null, expire = fal
       message: message,
       ...data,
     });
-  } else { // Otherwise, return the standard response
+  } else {
+    // Otherwise, return the standard response
     return res.status(status).json({
       message: message,
       data: data,
@@ -28,8 +29,9 @@ const sendResponse = (res, status = 200, message = "", data = null, expire = fal
 // Middleware function to authenticate token
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
+  console.log({authHeader});
   const token = authHeader && authHeader.split(" ")[1];
-
+  console.log(token);
   // If no token is found, return unauthorized error
   if (token == null) return sendResponse(res, 401, "Unauthorized");
 

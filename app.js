@@ -14,11 +14,6 @@ const {authenticateToken} = require("./helper/index");
 
 // instantiate an express server
 const app = express();
-app.use(
-  cors({
-    origin: "*",
-  })
-);
 app.use((req, res, next) => {
   // Set CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
