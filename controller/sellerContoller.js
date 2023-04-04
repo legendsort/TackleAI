@@ -74,7 +74,7 @@ const checkOneProductPage = async (url) => {
     // Logs errors encountered by the OpenAIApi or the `JSON.parse` method.
     console.log(e);
     // Returns null to be used in error handling.
-    return null;
+    return [];
   }
 };
 

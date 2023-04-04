@@ -15,7 +15,7 @@ const config = {
   width: 1800,
   height: 800,
   headless: true,
-  timeout: 120000,
+  timeout: 180000,
   ignoreHTTPSErrors: true,
   args: ["--disable-gpu", "--disable-dev-shm-usage", "--disable-setuid-sandbox", "--no-sandbox"],
   executablePath: chromiumPath,
@@ -120,7 +120,7 @@ class CrawlerService {
   // Visit website with given URL
   visitPage = async (page, url) => {
     try {
-      await page.goto(url, {waitUntil: "load", timeout: 120000});
+      await page.goto(url, {waitUntil: "load", timeout: 180000});
       return true;
     } catch (e) {
       console.log("Error when visiting new page: ", e.name, e.message);
