@@ -1,6 +1,3 @@
-// Importing required modules
-const jwt = require("jsonwebtoken");
-
 // Function to convert text into slug format
 const convertToSlug = (text) => {
   return text
@@ -26,28 +23,8 @@ const sendResponse = (res, status = 200, message = "", data = null, expire = fal
   }
 };
 
-// Middleware function to authenticate token
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  console.log({authHeader});
-  const token = authHeader && authHeader.split(" ")[1];
-  console.log(token);
-  // If no token is found, return unauthorized error
-  if (token == null) return sendResponse(res, 401, "Unauthorized");
-
-  // Verify the token and extract user information from it
-  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-    // If verification fails, return unauthenticated error
-    if (err) return sendResponse(res, 403, "Unauthenticated");
-    // If verification succeeds, attach user information to request object and call next middleware
-    req.username = user;
-    next();
-  });
-};
-
 // Exporting functions for external use
 module.exports = {
   sendResponse,
   convertToSlug,
-  authenticateToken,
 };

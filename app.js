@@ -7,10 +7,6 @@ const cookieParser = require("cookie-parser");
 // import routers
 const productRouter = require("./routes/productRouter");
 const sellerRouter = require("./routes/sellerRouter");
-const tokenRouter = require("./routes/tokenRouter");
-
-// import helper functions
-const {authenticateToken} = require("./helper/index");
 
 // instantiate an express server
 const app = express();
@@ -43,8 +39,6 @@ app.use(
 const baseUrl = process.env.BASE_URL;
 
 // register routes
-app.use(baseUrl + "/token", tokenRouter);
-app.use(baseUrl, authenticateToken);
 app.use(baseUrl + "/seller", sellerRouter);
 app.use(baseUrl + "/product", productRouter);
 

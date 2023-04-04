@@ -20,7 +20,6 @@
 - PORT           : `Port number`
 - OPENAI_API_KEY : `Custom OpenAI API key`
 - CHROMIUM       : `Path where chromium is installed.`
-- TOKEN_SECRET   : `Jwt token to authenticate API`
 - TIME_OUT       : `API response timeout`
 ### Start Project
 
