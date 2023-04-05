@@ -15,11 +15,11 @@ const openai = new OpenAIApi(configuration);
 // define prompts for text processing
 const prompts = {
   price:
-    "What is the price of the product according to content? (In case sold out, respond only previous pirce number.) Please responsd only number",
-  title: "What is the title of the product according to content? Please respond only title",
+    "What is the price of the product according to content? (In case sold out, respond only previous pirce number.) Please respond only number without any additional context or header.",
+  title: "What is the title of the product according to content? Please respond only title  without any additional context or header.",
   description:
-    "What is the description of the product  according to content? Please respond only description",
-  sku: "What is the sku of the product according to content? Please respond only with sku.  If not defined, respond only `None`",
+    "What is the description of the product according to content? Please respond only description without any additional context or header.",
+  sku: "What is the sku of the product according to content? Please respond only with sku.  If not defined, respond only `None` without any additional context or header.",
   media:
     "Please answer current bait product image information(Image should be exist and image should be only current product's image and pixel size should be bigger than 240px).Answer simply must be only JSON string of array of {type:1, url: url, alt: string}. Please respond simply JSON without any description or header",
 };

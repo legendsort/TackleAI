@@ -78,7 +78,7 @@ const checkOneProductPage = async (url) => {
           {
             role: "user",
             content:
-              "Please choose bait product pages for sale among these urls. Please respond simply JSON data of list of urls  without any description or header. If you can't respond only [].",
+              "Please choose bait product page urls for sale among these urls. Please respond simply JSON data of list of that urls without any description or header. If you can't respond only [].",
           },
         ],
       });
