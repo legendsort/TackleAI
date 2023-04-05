@@ -42,6 +42,18 @@ const scrapeSeller = async (url) => {
   }
 };
 
+const chunkArray = (array, chunkSize) => {
+  const chunks = [];
+  let i = 0;
+
+  while (i < array.length) {
+    chunks.push(array.slice(i, i + chunkSize));
+    i += chunkSize;
+  }
+
+  return chunks;
+}
+
 // Defines the `checkOneProductPage` function that utilizes a pre-configured OpenAI API to filter bait products from a given seller link.
 const checkOneProductPage = async (url) => {
   // Creates a configuration object using the `apiKey` obtained from process.env.
@@ -51,30 +63,35 @@ const checkOneProductPage = async (url) => {
 
   // Defines an OpenAIApi object
   const openai = new OpenAIApi(configuration);
-
+  let ans = [];
+  console.log(url);
   try {
-    // Makes an asynchronous call to the `createChatCompletion()` method and passes in a model and an array of messages.
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        // A system message containing the url of webpage
-        {role: "system", content: `This is the JSON data of list of urls of webpage: ${JSON.stringify(url)}`},
-        // A user message requesting information about bait product pages
-        {
-          role: "user",
-          content:
-            "Please find bait product pages for sale from these urls. Please respond simply JSON data of list of urls  without any description or header. If you can't respond only [].",
-        },
-      ],
-    });
-    // Extracts the content of the message as a JSON array of bait products URLs and returns it.
-    const content = completion.data.choices[0].message.content;
-    return JSON.parse(content);
+    // chunk as there may be a lot of urls
+    const chunks = chunkArray(url, 50);
+    for(const chunk of chunks) {
+      const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          // A system message containing the url of webpage
+          {role: "system", content: `This is the JSON data of list of urls of webpage: ${JSON.stringify(chunk)}`},
+          // A user message requesting information about bait product pages
+          {
+            role: "user",
+            content:
+              "Please choose bait product pages for sale among these urls. Please respond simply JSON data of list of urls  without any description or header. If you can't respond only [].",
+          },
+        ],
+      });
+      // Extracts the content of the message as a JSON array of bait products URLs and returns it.
+      const content = completion.data.choices[0].message.content;
+      ans.push(...JSON.parse(content));
+    }
+    return ans;
   } catch (e) {
     // Logs errors encountered by the OpenAIApi or the `JSON.parse` method.
     console.log(e);
     // Returns null to be used in error handling.
-    return [];
+    return ans;
   }
 };
 
@@ -98,12 +115,11 @@ const getProductList = async (url, step) => {
     let urlList = [];
 
     // Checks is to check url is valid url or not.
-    const checkUrl = await Crawler.visitPage(Crawler.page, url);
+    const checkUrl = await Crawler.visitPage(Crawler.page, url, "domcontentloaded");
     if (checkUrl === false) throw "Url is not valid";
 
     // find all sub urls from website and saves it in urlList
     await Crawler.visitAll(url, step, urlList);
-    console.log({urlList})
     // Calls the `filterProductURL()` method of the `Crawler` object and passes in the `Crawler` object and `urlList`.
     const productUrlList = await filterProductURL(urlList);
 
@@ -120,8 +136,8 @@ const getProductList = async (url, step) => {
     // Initializes `Crawler` within a browser context and returns null data and the caught exception for error.
     await Crawler.initBrowser();
     return {
-      data: null,
-      error: e,
+      data: [],
+      error: "Timedout",
     };
   }
 };
