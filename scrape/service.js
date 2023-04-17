@@ -76,8 +76,8 @@ class CrawlerService {
     const category = pathArray[3];
     const arr = url.split(".");
     //skip images
-    if(skipExt.includes(arr[arr.length - 1])) return false;
-    if(category === "" || category === undefined) return true;
+    if (skipExt.includes(arr[arr.length - 1])) return false;
+    if (category === "" || category === undefined) return true;
     for (const item of skipUrlList) {
       if (category.includes(item)) {
         return false;
@@ -88,10 +88,15 @@ class CrawlerService {
 
   // Method to retrieve all valid URLs on a given page
   getAllUrl = async (url, page) => {
-    const hrefs = await page.$$eval("a", (as) => as.map((a) => a.href.split("#")[0]));
     const realLink = [];
-    for (const link of hrefs) {
-      if ((await this.isSameDomain(url, link)) && this.isProductUrl(link)) realLink.push(link);
+    try {
+      await page.waitForSelector("a"); 
+      const hrefs = await page.$$eval("a", (as) => as.map((a) => a.href.split("#")[0]));
+      for (const link of hrefs) {
+        if ((await this.isSameDomain(url, link)) && this.isProductUrl(link)) realLink.push(link);
+      }
+    } catch(e) {
+
     }
     return realLink;
   };
@@ -99,14 +104,14 @@ class CrawlerService {
   visitAll = async (url, step, ans) => {
     // Check if URL has already been visited
     if (ans.includes(url)) return;
-    if(this.isProductUrl(url) === false) return ;
+    if (this.isProductUrl(url) === false) return;
     // Visit the page with given URL
-    await this.visitPage(this.page, url); 
+    await this.visitPage(this.page, url);
     url = this.page.url();
 
     // Check if URL has already been visited after visiting the page
     if (ans.includes(url)) return;
-    console.log({url})
+    console.log({url});
     // Add the visited URL to the answer list
     ans.push(url);
 
@@ -121,7 +126,7 @@ class CrawlerService {
   };
 
   // Visit website with given URL
-  visitPage = async (page, url, method="load") => {
+  visitPage = async (page, url, method = "load") => {
     try {
       await page.goto(url, {waitUntil: method, timeout: 180000});
       return true;
